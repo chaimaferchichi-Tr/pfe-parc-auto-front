@@ -39,7 +39,7 @@ export class AuthService {
 
   // Login method
   login(credentials: LoginRequest): Observable<User> {
-    return this.http.post<AuthResponse>(`http://localhost:3000/User/login`, credentials)
+    return this.http.post<AuthResponse>(`https://backend-parc.onrender.com/User/login`, credentials)
       .pipe(
         map((response: AuthResponse) => {
           if (response.user.statuts_account === 'inactive') {
@@ -68,7 +68,7 @@ export class AuthService {
 
   // Signup method
   signup(userData: SignupRequest): Observable<User> {
-    return this.http.post<AuthResponse>(`http://localhost:3000/User/register`, userData)
+    return this.http.post<AuthResponse>(`https://backend-parc.onrender.com//User/register`, userData)
       .pipe(
         map(response => {
           // Store user details and jwt token in local storage
@@ -90,16 +90,7 @@ export class AuthService {
     localStorage.removeItem('token');
     this.currentUserSubject.next(null);
     
-    // Production implementation might include an API call:
-    /*
-    this.http.post(`${environment.apiUrl}/auth/logout`, {}).subscribe(
-      () => {
-        localStorage.removeItem('currentUser');
-        localStorage.removeItem('token');
-        this.currentUserSubject.next(null);
-      }
-    );
-    */
+ 
   }
 
   // Update user profile
@@ -120,20 +111,7 @@ export class AuthService {
     this.currentUserSubject.next(updatedUser);
     return of(updatedUser);
     
-    // Production implementation would look like this:
-    /*
-    return this.http.put<User>(`${environment.apiUrl}/users/profile`, userData)
-      .pipe(
-        tap(updatedUser => {
-          // Update stored user data
-          localStorage.setItem('currentUser', JSON.stringify(updatedUser));
-          this.currentUserSubject.next(updatedUser);
-        }),
-        catchError(error => {
-          return throwError(() => new Error(error.error?.message || 'Profile update failed'));
-        })
-      );
-    */
+
   }
 
   // Get authenticated user's profile
@@ -144,15 +122,7 @@ export class AuthService {
     
     return of(this.currentUserValue);
     
-    // Production implementation would look like this:
-    /*
-    return this.http.get<User>(`${environment.apiUrl}/users/profile`)
-      .pipe(
-        catchError(error => {
-          return throwError(() => new Error(error.error?.message || 'Failed to fetch profile'));
-        })
-      );
-    */
+
   }
 
   // Filter missions for the current driver

@@ -5,7 +5,7 @@ import { FuelStock } from '../models/fuel-stock.model';
 
 @Injectable({ providedIn: 'root' })
 export class FuelStockService {
-  private apiUrl = 'http://localhost:3000/FuelStock';
+  private apiUrl = 'https://backend-parc.onrender.com/FuelStock';
 
   constructor(private http: HttpClient) {}
 
