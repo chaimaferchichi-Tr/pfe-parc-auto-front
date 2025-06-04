@@ -7,7 +7,7 @@ import { Maintenance } from '../models/maintenance.model';
   providedIn: 'root'
 })
 export class MaintenanceService {
-  private apiUrl = 'http://localhost:3000/Maintenance';
+  private apiUrl = 'https://backend-parc.onrender.com/Maintenance';
 
   constructor(private http: HttpClient) {}
 
@@ -36,18 +36,28 @@ export class MaintenanceService {
   }
   // maintenance.service.ts
   getMaintenanceStatusStats() {
-  return this.http.get<any[]>('http://localhost:3000/Maintenance/statistics/maintenance/status');
+  return this.http.get<any[]>(
+    'https://backend-parc.onrender.com/Maintenance/statistics/maintenance/status'
+  );
   }
   getMaintenanceTypeStats() {
-    return this.http.get<any[]>('http://localhost:3000/Maintenance/statistics/maintenance/type');
+    return this.http.get<any[]>(
+      'https://backend-parc.onrender.com/Maintenance/statistics/maintenance/type'
+    );
   }
   getMaintenanceMonthlyStats() {
-    return this.http.get<any[]>('http://localhost:3000/Maintenance/statistics/maintenance/monthly');
+    return this.http.get<any[]>(
+      'https://backend-parc.onrender.com/Maintenance/statistics/maintenance/monthly'
+    );
   }
   getMaintenanceStatusDistribution() {
-    return this.http.get<any>('http://localhost:3000/Maintenance/statistics/maintenance/status-distribution');
+    return this.http.get<any>(
+      'https://backend-parc.onrender.com/Maintenance/statistics/maintenance/status-distribution'
+    );
   }
   getMaintenanceMonthlyType() {
-    return this.http.get<any[]>('http://localhost:3000/Maintenance/statistics/maintenance/monthly-type');
+    return this.http.get<any[]>(
+      'https://backend-parc.onrender.com/Maintenance/statistics/maintenance/monthly-type'
+    );
   }
 }

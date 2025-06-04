@@ -7,7 +7,7 @@ import { Mission } from '../models/mission.model';
   providedIn: 'root'
 })
 export class MissionService {
-  private apiUrl = 'http://localhost:3000/Mission'; 
+  private apiUrl = 'https://backend-parc.onrender.com/Mission'; 
   constructor(private http: HttpClient) {}
 
   getMissions(): Observable<Mission[]> {

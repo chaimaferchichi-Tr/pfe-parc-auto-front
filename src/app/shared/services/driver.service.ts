@@ -11,23 +11,23 @@ export class DriverService {
   constructor(private http: HttpClient) { }
 
   getDrivers(): Observable<Driver[]> {
-    return this.http.get<Driver[]>('http://localhost:3000/Driver/all');
+    return this.http.get<Driver[]>('https://backend-parc.onrender.com/Driver/all');
   }
 
   getDriver(id: any): Observable<Driver> {
-    return this.http.get<Driver>(`http://localhost:3000/Driver/getbyid/${id}`);
+    return this.http.get<Driver>(`https://backend-parc.onrender.com/Driver/getbyid/${id}`);
   }
 
   addDriver(driver: Omit<Driver, 'id'>): Observable<Driver> {
-    return this.http.post<Driver>('http://localhost:3000/Driver/add', driver);
+    return this.http.post<Driver>('https://backend-parc.onrender.com/Driver/add', driver);
   }
 
   updateDriver(driver: Driver): Observable<Driver> {
-    return this.http.put<Driver>(`http://localhost:3000/Driver/update/${driver._id}`, driver);
+    return this.http.put<Driver>(`https://backend-parc.onrender.com/Driver/update/${driver._id}`, driver);
   }
 
   deleteDriver(id: any): Observable<boolean> {
-    return this.http.delete<boolean>(`http://localhost:3000/Driver/delete/${id}`);
+    return this.http.delete<boolean>(`https://backend-parc.onrender.com/Driver/delete/${id}`);
   }
 
   getDriversByStatus(status: string): Observable<Driver[]> {
@@ -41,26 +41,26 @@ export class DriverService {
   }
 
   getDriversStat() {
-    return this.http.get<any>('http://localhost:3000/Driver/statistics');
+    return this.http.get<any>('https://backend-parc.onrender.com/Driver/statistics');
   }
 
   getAvailableDriversStat() {
-    return this.http.get<any>('http://localhost:3000/Driver/statistics/available');
+    return this.http.get<any>('https://backend-parc.onrender.com/Driver/statistics/available');
   }
 
   getOnLeaveDriversStat() {
-    return this.http.get<any>('http://localhost:3000/Driver/statistics/on-leave');
+    return this.http.get<any>('https://backend-parc.onrender.com/Driver/statistics/on-leave');
   }
 
   getOnMissionDriversStat() {
-    return this.http.get<any>('http://localhost:3000/Driver/statistics/on-mission');
+    return this.http.get<any>('https://backend-parc.onrender.com/Driver/statistics/on-mission');
   }
 
   getDriversStatusPie(): Observable<{ available: number; onLeave: number; onMission: number }> {
-    return this.http.get<{ available: number; onLeave: number; onMission: number }>('http://localhost:3000/Driver/statistics/drivers/status');
+    return this.http.get<{ available: number; onLeave: number; onMission: number }>('https://backend-parc.onrender.com/Driver/statistics/drivers/status');
   }
 
   getDriversCount(): Observable<{ count: number }> {
-    return this.http.get<{ count: number }>('http://localhost:3000/Driver/statistics/drivers/count');
+    return this.http.get<{ count: number }>('https://backend-parc.onrender.com/Driver/statistics/drivers/count');
   }
 }

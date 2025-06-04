@@ -16,11 +16,15 @@ export class VehicleService {
   constructor(private http: HttpClient) {}
 
   getVehicles(): Observable<Vehicle[]> {
-    return this.http.get<Vehicle[]>('http://localhost:3000/Vehicle/all');
+    return this.http.get<Vehicle[]>(
+      'https://backend-parc.onrender.com/Vehicle/all'
+    );
   }
 
   getVehicle(id: any): Observable<Vehicle | undefined> {
-    return this.http.get<Vehicle>(`http://localhost:3000/Vehicle/getbyid/${id}`);
+    return this.http.get<Vehicle>(
+      `https://backend-parc.onrender.com/Vehicle/getbyid/${id}`
+    );
   }
 
   searchVehicles(searchTerm: string): Observable<Vehicle[]> {
@@ -37,16 +41,22 @@ export class VehicleService {
 
 
 addVehicle(vehicle: Omit<Vehicle, 'id'>): Observable<Vehicle> {
-  return this.http.post<Vehicle>('http://localhost:3000/Vehicle/ajout', vehicle);
+  return this.http.post<Vehicle>(
+    'https://backend-parc.onrender.com/Vehicle/ajout', vehicle
+  );
 }
   updateVehicle(vehicle: Vehicle): Observable<Vehicle> {
     console.log('Updating vehicle with data:', vehicle); // Debugging log
-    return this.http.put<Vehicle>(`http://localhost:3000/Vehicle/update/${vehicle._id}`, vehicle);
+    return this.http.put<Vehicle>(
+      `https://backend-parc.onrender.com/Vehicle/update/${vehicle._id}`, vehicle
+    );
   }
 
   deleteVehicle(id: any): Observable<boolean> {
     // Call backend API to delete vehicle
-    return this.http.delete<boolean>(`http://localhost:3000/Vehicle/supprimer/${id}`);
+    return this.http.delete<boolean>(
+      `https://backend-parc.onrender.com/Vehicle/supprimer/${id}`
+    );
   }
 
   getVehicleStatistics(): Observable<{
@@ -82,15 +92,23 @@ addVehicle(vehicle: Omit<Vehicle, 'id'>): Observable<Vehicle> {
   }
 
   getAvailableVehiclesStat() {
-    return this.http.get<any>('http://localhost:3000/Vehicle/statistics/available');
+    return this.http.get<any>(
+      'https://backend-parc.onrender.com/Vehicle/statistics/available'
+    );
   }
   getOnMissionVehiclesStat() {
-    return this.http.get<any>('http://localhost:3000/Vehicle/statistics/on-mission');
+    return this.http.get<any>(
+      'https://backend-parc.onrender.com/Vehicle/statistics/on-mission'
+    );
   }
   getInMaintenanceVehiclesStat() {
-    return this.http.get<any>('http://localhost:3000/Vehicle/statistics/in-maintenance');
+    return this.http.get<any>(
+      'https://backend-parc.onrender.com/Vehicle/statistics/in-maintenance'
+    );
   }
   getOutOfServiceVehiclesStat() {
-    return this.http.get<any>('http://localhost:3000/Vehicle/statistics/out-of-service');
+    return this.http.get<any>(
+      'https://backend-parc.onrender.com/Vehicle/statistics/out-of-service'
+    );
   }
 }

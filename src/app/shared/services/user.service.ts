@@ -13,12 +13,12 @@ export class UserService {
 
   getUsers(): Observable<User[]> {
     // Fetch users from backend API
-    return this.http.get<User[]>('http://localhost:3000/User/all');
+    return this.http.get<User[]>('https://backend-parc.onrender.com/User/all');
   }
 
   getUser(id: any): Observable<User | undefined> {
     // Fetch user from backend API
-    return this.http.get<User>(`http://localhost:3000/User/getbyid/${id}`);
+    return this.http.get<User>(`https://backend-parc.onrender.com/User/getbyid/${id}`);
   }
 
   // Fix: always search in-memory if users are loaded, otherwise fallback to backend
@@ -54,24 +54,34 @@ export class UserService {
 
   addUser(user: Omit<User, '_id' | 'createdAt' | 'updatedAt' | '__v'>): Observable<User> {
     // POST to backend API
-    return this.http.post<User>('http://localhost:3000/User/register', user);
+    return this.http.post<User>(
+      'https://backend-parc.onrender.com/User/register', user
+    );
   }
 
   updateUser(user: User): Observable<User> {
     // Call backend API to update user
-    return this.http.put<User>(`http://localhost:3000/User/update/${user._id}`, user);
+    return this.http.put<User>(
+      `https://backend-parc.onrender.com/User/update/${user._id}`, user
+    );
   }
 
   deleteUser(id: string): Observable<boolean> {
     // Call backend API to delete user
-    return this.http.delete<boolean>(`http://localhost:3000/User/delete/${id}`);
+    return this.http.delete<boolean>(
+      `https://backend-parc.onrender.com/User/delete/${id}`
+    );
   }
 
   setDriverAccountActive(userId: string): Observable<User> {
-    return this.http.put<User>(`http://localhost:3000/User/activate-driver/${userId}`, {});
+    return this.http.put<User>(
+      `https://backend-parc.onrender.com/User/activate-driver/${userId}`, {}
+    );
   }
 
   blockUser(userId: string): Observable<User> {
-    return this.http.put<User>(`http://localhost:3000/User/blockuser/${userId}`, {});
+    return this.http.put<User>(
+      `https://backend-parc.onrender.com/User/blockuser/${userId}`, {}
+    );
   }
 }

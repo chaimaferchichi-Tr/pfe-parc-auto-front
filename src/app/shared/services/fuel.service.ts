@@ -8,7 +8,7 @@ import { FuelRecord } from '../models/fuel-record.model';
   providedIn: 'root'
 })
 export class FuelService {
-  private apiUrl = 'http://localhost:3000/Fuel';
+  private apiUrl = 'https://backend-parc.onrender.com/Fuel';
 
   constructor(private http: HttpClient) { }
 
