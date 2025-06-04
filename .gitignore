@@ -1,0 +1,41 @@
+node_modules/
+dist/
+.env
+.angular/
+.angular/cache/
+.DS_Store
+*.log
+uploads/
+.idea/
+.vscode/
+*.tgz
+*.gz
+*.zip
+*.bak
+*.tmp
+*.swp
+*.swo
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+coverage/
+# Ignore Angular build output
+FleetManagerPro/.angular/
+FleetManagerPro/.angular/cache/
+
+# Ignore build and cache files
+build/
+out-tsc/
+# OS generated files
+Thumbs.db
+# npm package lock
+yarn.lock
+package-lock.json
+# Ignore all cache and temp files
+.cache/
+.sass-cache/
+# Ignore uploads
+FleetManagerPro/uploads/
+# Ignore temp
+/tmp/
+# End

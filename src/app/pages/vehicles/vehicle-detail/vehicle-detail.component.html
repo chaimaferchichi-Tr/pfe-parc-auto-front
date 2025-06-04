@@ -1,0 +1,230 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="mb-6 flex items-center justify-between">
+    <button (click)="goBack()" class="flex items-center text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      Back to Vehicles
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="flex justify-center items-center h-64">
+    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600 dark:border-red-400"></div>
+  </div>
+
+  <div *ngIf="error" class="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 p-4 rounded-lg mb-6">
+    {{ error }}
+  </div>
+
+  <div *ngIf="vehicle && !loading" class="max-w-4xl mx-auto">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+      
+      <!-- Header with Actions -->
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between p-6 border-b border-gray-200 dark:border-gray-700 gap-4">
+        <div class="flex items-center">
+          <div class="w-14 h-14 rounded-full bg-red-600 flex items-center justify-center text-white text-xl font-bold mr-4">
+            {{ vehicle.name.charAt(0) }}
+          </div>
+          <div>
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-white">{{ vehicle.name }}</h2>
+            <p class="text-gray-500 dark:text-gray-400">{{ vehicle.type }}</p>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-2 items-center justify-end">
+          <button (click)="editVehicle()" class="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 transition" title="Edit Vehicle">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+          </button>
+          <button (click)="deleteVehicle()" class="p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-red-100 dark:hover:bg-red-700 text-red-600 dark:text-red-400 transition" title="Delete Vehicle">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </button>
+          <button (click)="openMaintenanceList()" class="px-3 py-1 rounded border border-red-400 text-red-600 dark:text-red-300 bg-white dark:bg-gray-800 hover:bg-red-50 dark:hover:bg-gray-700 text-sm font-medium transition flex items-center gap-1" title="View Maintenance List">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a4 4 0 014-4h4m0 0V7a4 4 0 00-4-4H7a4 4 0 00-4 4v10a4 4 0 004 4h4a4 4 0 004-4z" />
+            </svg>
+            Maintenance
+          </button>
+          <button (click)="openFuelConsumptionList()" class="px-3 py-1 rounded border border-blue-400 text-blue-600 dark:text-blue-300 bg-white dark:bg-gray-800 hover:bg-blue-50 dark:hover:bg-gray-700 text-sm font-medium transition flex items-center gap-1" title="View Fuel Consumption">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 17v1a3 3 0 01-3 3H7a3 3 0 01-3-3V7a3 3 0 013-3h6a3 3 0 013 3v1" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 11h8m-4-4v8" />
+            </svg>
+            Fuel
+          </button>
+        </div>
+      </div>
+      <!-- Vehicle Information -->
+      <div class="p-6 space-y-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div>
+            <h3 class="text-lg font-medium text-gray-800 dark:text-white mb-4">Basic Information</h3>
+            <div class="mb-4">
+              <p class="text-sm text-gray-500 dark:text-gray-400">Type</p>
+              <p class="text-gray-800 dark:text-white font-medium">{{ vehicle.type }}</p>
+            </div>
+            <div class="mb-4">
+              <p class="text-sm text-gray-500 dark:text-gray-400">License Plate</p>
+              <p class="text-gray-800 dark:text-white font-medium">{{ vehicle.licensePlate }}</p>
+            </div>
+            <div class="mb-4">
+              <p class="text-sm text-gray-500 dark:text-gray-400">Fuel Type</p>
+              <p class="text-gray-800 dark:text-white font-medium">{{ vehicle.fuelType }}</p>
+            </div>
+            <div class="mb-4">
+              <p class="text-sm text-gray-500 dark:text-gray-400">Current Mileage</p>
+              <p class="text-gray-800 dark:text-white font-medium">{{ vehicle.mileage }} km</p>
+            </div>
+          </div>
+          <div>
+            <h3 class="text-lg font-medium text-gray-800 dark:text-white mb-4">Additional Details</h3>
+            <div class="mb-4">
+              <p class="text-sm text-gray-500 dark:text-gray-400">Status</p>
+              <p class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                [ngClass]="getStatusClass(vehicle.status)">
+                {{ vehicle.status }}
+              </p>
+            </div>
+            <div class="mb-4">
+              <p class="text-sm text-gray-500 dark:text-gray-400">Purchase Date</p>
+              <p class="text-gray-800 dark:text-white font-medium">{{ vehicle.purchaseDate | date:'mediumDate' }}</p>
+            </div>
+            <div class="mb-4">
+              <p class="text-sm text-gray-500 dark:text-gray-400">Last Maintenance</p>
+              <p class="text-gray-800 dark:text-white font-medium">{{ vehicle.lastMaintenance | date:'mediumDate' }}</p>
+            </div>
+            <div class="mb-4">
+              <p class="text-sm text-gray-500 dark:text-gray-400">Next Maintenance</p>
+              <p class="text-gray-800 dark:text-white font-medium">{{ vehicle.nextMaintenance | date:'mediumDate' }}</p>
+            </div>
+            <div class="mb-4">
+              <p class="text-sm text-gray-500 dark:text-gray-400">Registration Number</p>
+              <p class="text-gray-800 dark:text-white font-medium">{{ vehicle.registrationNumber }}</p>
+            </div>
+            <div class="mb-4">
+              <p class="text-sm text-gray-500 dark:text-gray-400">Model</p>
+              <p class="text-gray-800 dark:text-white font-medium">{{ vehicle.model }}</p>
+            </div>
+            <div class="mb-4">
+              <p class="text-sm text-gray-500 dark:text-gray-400">Year</p>
+              <p class="text-gray-800 dark:text-white font-medium">{{ vehicle.year }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Maintenance List Modal/Section -->
+  <div
+    *ngIf="showMaintenanceList"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
+  >
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg max-w-2xl w-full p-6 relative">
+      <button (click)="closeMaintenanceList()" class="absolute top-2 right-2 text-gray-400 hover:text-red-600 text-2xl">&times;</button>
+      <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">
+        Maintenance List for {{ vehicle?.name || 'Vehicle' }}
+      </h3>
+      <div *ngIf="maintenanceLoading" class="flex justify-center py-8">
+        <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-red-600"></div>
+      </div>
+      <div *ngIf="maintenanceError" class="text-red-600 dark:text-red-400 mb-4">{{ maintenanceError }}</div>
+      <div *ngIf="!maintenanceLoading && (maintenanceList?.length ?? 0) > 0">
+        <div class="flex flex-col md:flex-row items-center gap-2 mb-4">
+          <label for="maintenanceTypeFilter" class="mr-2 text-gray-700 dark:text-gray-200">Filter by Type:</label>
+          <select id="maintenanceTypeFilter" [(ngModel)]="selectedMaintenanceType" (change)="filterMaintenanceByType()" class="rounded border-gray-300 dark:bg-gray-700 dark:text-white px-2 py-1">
+            <option value="">All Types</option>
+            <option value="preventive">preventive</option>
+            <option value="corrective">corrective</option>
+          </select>
+          <label for="maintenanceDateFilter" class="ml-4 mr-2 text-gray-700 dark:text-gray-200">Filter by Date:</label>
+          <select id="maintenanceDateFilter" [(ngModel)]="selectedMaintenanceDateFilter" (change)="filterMaintenanceByType()" class="rounded border-gray-300 dark:bg-gray-700 dark:text-white px-2 py-1">
+            <option value="">All Dates</option>
+            <option value="upcoming">Upcoming</option>
+            <option value="passed">Passed</option>
+          </select>
+          <button type="button" (click)="refreshMaintenanceFilters()" class="ml-4 px-3 py-1 rounded border border-gray-400 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 text-sm font-medium transition flex items-center gap-1" title="Refresh Filters">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582M20 20v-5h-.581M5.635 19A9 9 0 003 12c0-5 4-9 9-9s9 4 9 9a9 9 0 01-2.635 6.364M19 5l-7 7-7-7" />
+            </svg>
+            Refresh
+          </button>
+        </div>
+        <table class="min-w-full text-sm text-left">
+          <thead>
+            <tr class="bg-gray-100 dark:bg-gray-700">
+              <th class="px-4 py-2">Type</th>
+              <th class="px-4 py-2">Status</th>
+              <th class="px-4 py-2">Cost</th>
+              <th class="px-4 py-2">Date</th>
+              <th class="px-4 py-2">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let m of maintenanceList" class="border-b dark:border-gray-700">
+              <td class="px-4 py-2">{{ m.maintenanceType }}</td>
+              <td class="px-4 py-2">{{ m.status }}</td>
+              <td class="px-4 py-2">{{ m.cost | number:'1.0-2' }} TND</td>
+              <td class="px-4 py-2">{{ m.date | date:'mediumDate' }}</td>
+              <td class="px-4 py-2">{{ m.description }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div *ngIf="!maintenanceLoading && maintenanceList?.length === 0" class="text-gray-500 dark:text-gray-400 text-center py-8">
+        No maintenance records found for this vehicle.
+      </div>
+    </div>
+  </div>
+
+  <!-- Fuel Consumption Modal -->
+  <div
+    *ngIf="showFuelConsumptionList"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
+  >
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg max-w-3xl w-full p-6 relative">
+      <button (click)="closeFuelConsumptionList()" class="absolute top-2 right-2 text-gray-400 hover:text-red-600 text-2xl">&times;</button>
+      <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-white">Fuel Consumption History for {{ vehicle?.name || 'Vehicle' }}</h3>
+      <div class="mb-4 flex flex-col md:flex-row items-center gap-2">
+        <label for="missionFilter" class="mr-2 text-gray-700 dark:text-gray-200">Filter by Mission:</label>
+        <select id="missionFilter" [(ngModel)]="selectedMission" (change)="filterFuelByMission()" class="rounded border-gray-300 dark:bg-gray-700 dark:text-white px-2 py-1">
+          <option value="">All Missions</option>
+          <option *ngFor="let m of missionOptions" [value]="m._id">{{ m.title }}</option>
+        </select>
+      </div>
+      <div *ngIf="fuelLoading" class="flex justify-center py-8">
+        <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600"></div>
+      </div>
+      <div *ngIf="fuelError" class="text-red-600 dark:text-red-400 mb-4">{{ fuelError }}</div>
+      <div *ngIf="!fuelLoading && filteredFuelList.length > 0">
+        <table class="min-w-full text-sm text-left">
+          <thead>
+            <tr class="bg-gray-100 dark:bg-gray-700">
+              <th class="px-4 py-2">Mission</th>
+              <th class="px-4 py-2">Status</th>
+              <th class="px-4 py-2">Start Date</th>
+              <th class="px-4 py-2">End Date</th>
+              <th class="px-4 py-2">Quantity (L)</th>
+              <th class="px-4 py-2">Cost (TND)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let f of filteredFuelList" class="border-b dark:border-gray-700">
+              <td class="px-4 py-2">{{ f.missionTitle }}</td>
+              <td class="px-4 py-2">{{ f.missionStatus }}</td>
+              <td class="px-4 py-2">{{ f.missionStartDate | date:'mediumDate' }}</td>
+              <td class="px-4 py-2">{{ f.missionEndDate | date:'mediumDate' }}</td>
+              <td class="px-4 py-2">{{ f.totalFuelQuantity }}</td>
+              <td class="px-4 py-2">{{ f.totalFuelCost | number:'1.0-2' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div *ngIf="!fuelLoading && filteredFuelList.length === 0" class="text-gray-500 dark:text-gray-400 text-center py-8">
+        No fuel consumption records found for this vehicle.
+      </div>
+    </div>
+  </div>
+</div>

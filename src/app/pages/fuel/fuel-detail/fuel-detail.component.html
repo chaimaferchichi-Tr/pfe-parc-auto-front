@@ -1,0 +1,107 @@
+<div class="container p-4 mx-auto">
+  <!-- Top Navigation Bar -->
+  <div class="flex items-center mb-6">
+    <button 
+      (click)="goBack()" 
+      class="mr-4 flex items-center justify-center h-10 w-10 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+    </button>
+    <h1 class="text-2xl font-semibold text-gray-800 dark:text-white flex-1">Fuel Record Details</h1>
+  </div>
+
+  <!-- Loading Indicator -->
+  <div *ngIf="loading" class="flex justify-center py-8">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-700"></div>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error && !loading" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded" role="alert">
+    <p class="font-bold">Error</p>
+    <p>{{ error }}</p>
+    <button (click)="goBack()" class="mt-2 text-red-700 hover:text-red-900 font-medium">
+      Go Back
+    </button>
+  </div>
+
+  <!-- Fuel Record Details -->
+  <div *ngIf="fuelRecord && !loading" class="max-w-3xl mx-auto">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-8">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+          Fuel Record Details
+        </h2>
+        <div class="flex items-center gap-2 ml-auto">
+          <button *ngIf="fuelRecord" (click)="editFuelRecord()" class="flex items-center px-3 py-1 bg-red-600 text-white rounded text-xs hover:bg-red-700 focus:outline-none transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+            Edit
+          </button>
+          <button *ngIf="fuelRecord.mission?.vehicle" (click)="goToVehicle()" class="flex items-center px-3 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700 focus:outline-none transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            View Vehicle
+          </button>
+          <button *ngIf="fuelRecord.mission?.driver" (click)="goToDriver()" class="flex items-center px-3 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700 focus:outline-none transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268-2.943 9.542-7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+            View Driver
+          </button>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div>
+          <div class="space-y-3">
+            <div class="flex">
+              <span class="text-gray-500 dark:text-gray-400 w-1/3">Date:</span>
+              <span class="text-gray-900 dark:text-white font-medium">{{ formatDate(fuelRecord.date) }}</span>
+            </div>
+            <div class="flex">
+              <span class="text-gray-500 dark:text-gray-400 w-1/3">Quantity:</span>
+              <span class="text-gray-900 dark:text-white font-medium">{{ fuelRecord.quantity }} L</span>
+            </div>
+            <div class="flex">
+              <span class="text-gray-500 dark:text-gray-400 w-1/3">Cost:</span>
+              <span class="text-gray-900 dark:text-white font-medium">{{ fuelRecord.cost }} DT</span>
+            </div>
+            <div class="flex">
+              <span class="text-gray-500 dark:text-gray-400 w-1/3">Station Name:</span>
+              <span class="text-gray-900 dark:text-white font-medium">{{ fuelRecord.station }}</span>
+            </div>
+            <div class="flex">
+              <span class="text-gray-500 dark:text-gray-400 w-1/3">Location:</span>
+              <span class="text-gray-900 dark:text-white font-medium">{{ fuelRecord.location }}</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="space-y-3">
+            <div class="flex">
+              <span class="text-gray-500 dark:text-gray-400 w-1/3">Vehicle:</span>
+              <span class="text-gray-900 dark:text-white font-medium">{{ fuelRecord.mission?.vehicle?.name || 'Not assigned' }}</span>
+            </div>
+            <div class="flex">
+              <span class="text-gray-500 dark:text-gray-400 w-1/3">Vehicle ID:</span>
+              <span class="text-gray-900 dark:text-white font-medium">{{ fuelRecord.mission?.vehicle?._id || '-' }}</span>
+            </div>
+            <div class="flex items-center">
+              <span class="text-gray-500 dark:text-gray-400 w-1/3">Driver:</span>
+              <span class="text-gray-900 dark:text-white font-medium">{{ fuelRecord.mission?.driver?.user?.name || 'Not assigned' }}</span>
+            </div>
+            <div class="flex mt-2 items-center" *ngIf="fuelRecord.fuelType">
+              <span class="text-gray-500 dark:text-gray-400 w-1/3">Fuel Type:</span>
+              <span class="px-2 py-1 text-xs leading-none font-semibold rounded-full bg-gradient-to-r from-yellow-400 via-red-400 to-pink-500 text-white shadow">{{ fuelRecord.fuelType }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

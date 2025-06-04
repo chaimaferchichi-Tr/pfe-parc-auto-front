@@ -1,0 +1,40 @@
+<div class="container p-4 mx-auto max-w-xl">
+  <h1 class="text-2xl font-semibold text-gray-800 dark:text-white mb-6">{{ isEditMode ? 'Edit Fuel Stock' : 'Add Fuel Stock' }}</h1>
+  <form [formGroup]="fuelStockForm" (ngSubmit)="onSubmit()" class="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6">
+    <div class="mb-4">
+      <label class="form-label">Transaction Type</label>
+      <select formControlName="transaction_type" class="form-control">
+        <option value="in">In</option>
+        <option value="out">Out</option>
+      </select>
+    </div>
+    <div class="mb-4" *ngIf="fuelStockForm.get('transaction_type')?.value === 'in' || fuelStockForm.get('transaction_type')?.value === 'out'">
+      <label class="form-label">Quantity</label>
+      <input type="number" formControlName="quantity" class="form-control" min="1" required>
+    </div>
+    <div class="mb-4" *ngIf="fuelStockForm.get('transaction_type')?.value === 'in' || fuelStockForm.get('transaction_type')?.value === 'out'">
+      <label class="form-label">Fuel Type</label>
+      <select formControlName="fueltype" class="form-control">
+        <option value="diesel">Diesel</option>
+        <option value="gasoline">Gasoline</option>
+      </select>
+    </div>
+    <div class="mb-4" *ngIf="fuelStockForm.get('transaction_type')?.value === 'in'">
+      <label class="form-label">Supplier</label>
+      <input type="text" formControlName="supplier" class="form-control">
+    </div>
+    <div class="mb-4" *ngIf="fuelStockForm.get('transaction_type')?.value === 'out'">
+      <label class="form-label">Vehicle </label>
+      <select formControlName="vehicle" class="form-control">
+        <option [ngValue]="null">None</option>
+        <option *ngFor="let v of vehicles" [ngValue]="v._id">{{ v.name }}</option>
+      </select>
+    </div>
+    <div class="flex justify-end gap-2 mt-6">
+      <button type="button" (click)="cancel()" class="btn btn-secondary">Cancel</button>
+      <button type="submit" class="btn btn-primary" [disabled]="fuelStockForm.invalid || submitting">
+        {{ isEditMode ? 'Update' : 'Add' }} Fuel Stock
+      </button>
+    </div>
+  </form>
+</div>

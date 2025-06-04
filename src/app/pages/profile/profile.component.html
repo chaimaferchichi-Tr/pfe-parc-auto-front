@@ -1,0 +1,167 @@
+<div class="container mx-auto px-4 py-6">
+  <h1 class="text-2xl font-semibold text-gray-800 dark:text-white mb-6">Profile Settings</h1>
+  
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    
+    <!-- User Info Card -->
+    <div class="lg:col-span-1">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+        <div class="bg-red-600 p-6 text-center">
+          <div class="w-24 h-24 rounded-full bg-white text-red-600 flex items-center justify-center text-3xl font-bold mx-auto">
+            {{ user ? (user.name.charAt(0) + (user.lastname.charAt(0) || '')) : 'U' }}
+          </div>
+        </div>
+        <div class="p-6 text-center">
+          <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-1">
+            {{ user ? (user.name + ' ' + user.lastname) : 'User' }}
+          </h2>
+          <p class="text-gray-500 dark:text-gray-400 mb-4">
+            {{ user ? (user.role.charAt(0).toUpperCase() + user.role.slice(1)) : '' }}
+          </p>
+          <div class="flex justify-center space-x-4">
+            <div class="text-center">
+              <span class="block text-2xl font-bold text-gray-700 dark:text-gray-300">15</span>
+              <span class="text-sm text-gray-500 dark:text-gray-400">Missions</span>
+            </div>
+            <div class="text-center">
+              <span class="block text-2xl font-bold text-gray-700 dark:text-gray-300">8</span>
+              <span class="text-sm text-gray-500 dark:text-gray-400">Vehicles</span>
+            </div>
+            <div class="text-center">
+              <span class="block text-2xl font-bold text-gray-700 dark:text-gray-300">12</span>
+              <span class="text-sm text-gray-500 dark:text-gray-400">Drivers</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Profile Form -->
+    <div class="lg:col-span-2">
+      <div class="card bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+        <div class="card-header bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+          <h2 class="text-lg font-semibold text-gray-800 dark:text-white">Edit Profile</h2>
+        </div>
+        <div class="card-body p-6">
+          <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
+            
+            <!-- Success message -->
+            <div *ngIf="success" class="mb-4 p-4 bg-green-100 border-l-4 border-green-500 text-green-700 dark:bg-green-900 dark:text-green-200">
+              {{ success }}
+            </div>
+            
+            <!-- Error message -->
+            <div *ngIf="error" class="mb-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 dark:bg-red-900 dark:text-red-200">
+              {{ error }}
+            </div>
+            
+            <div class="mb-4">
+              <label for="name" class="form-label">Firstname </label>
+              <input type="text" id="name" formControlName="name" class="form-control">
+              <div *ngIf="profileForm.get('name')?.invalid && profileForm.get('name')?.touched" class="form-error">
+                Firstname is required
+              </div>
+            </div>
+            
+
+             <div class="mb-4">
+              <label for="name" class="form-label">Lastname</label>
+              <input type="text" id="lastname" formControlName="lastname" class="form-control">
+              <div *ngIf="profileForm.get('lastname')?.invalid && profileForm.get('lastname')?.touched" class="form-error">
+                Lastname is required
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label for="email" class="form-label">Email Address</label>
+              <input type="email" id="email" formControlName="email" class="form-control">
+              <div *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched" class="form-error">
+                <span *ngIf="profileForm.get('email')?.errors?.['required']">Email is required</span>
+                <span *ngIf="profileForm.get('email')?.errors?.['email']">Please enter a valid email</span>
+              </div>
+            </div>
+        
+            <div class="mb-4">
+              <label for="role" class="form-label">Role</label>
+              <input type="text" id="role"  formControlName="role" class="form-control" readonly>
+             
+            </div>
+            
+            <div class="flex justify-end">
+              <button 
+                type="submit" 
+                [disabled]="profileForm.invalid || submitting"
+                [class.opacity-50]="profileForm.invalid || submitting"
+                class="btn btn-primary px-6"
+              >
+                <span *ngIf="submitting">Updating...</span>
+                <span *ngIf="!submitting">Update Profile</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+      <!-- Password Form -->
+      <div class="card bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden mt-6">
+        <div class="card-header bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+          <h2 class="text-lg font-semibold text-gray-800 dark:text-white">Change Password</h2>
+        </div>
+        <div class="card-body p-6">
+          <form [formGroup]="passwordForm" (ngSubmit)="updatePassword()">
+            
+            <!-- Success message -->
+            <div *ngIf="passwordSuccess" class="mb-4 p-4 bg-green-100 border-l-4 border-green-500 text-green-700 dark:bg-green-900 dark:text-green-200">
+              {{ passwordSuccess }}
+            </div>
+            
+            <!-- Error message -->
+            <div *ngIf="passwordError" class="mb-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 dark:bg-red-900 dark:text-red-200">
+              {{ passwordError }}
+            </div>
+            
+            <div class="mb-4">
+              <label for="currentPassword" class="form-label">Current Password</label>
+              <input type="password" id="currentPassword" formControlName="currentPassword" class="form-control">
+              <div *ngIf="passwordForm.get('currentPassword')?.invalid && passwordForm.get('currentPassword')?.touched" class="form-error">
+                Current password is required
+              </div>
+            </div>
+            
+            <div class="mb-4">
+              <label for="newPassword" class="form-label">New Password</label>
+              <input type="password" id="newPassword" formControlName="newPassword" class="form-control">
+              <div *ngIf="passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched" class="form-error">
+                <span *ngIf="passwordForm.get('newPassword')?.errors?.['required']">New password is required</span>
+                <span *ngIf="passwordForm.get('newPassword')?.errors?.['minlength']">Password must be at least 8 characters</span>
+              </div>
+            </div>
+            
+            <div class="mb-4">
+              <label for="confirmPassword" class="form-label">Confirm New Password</label>
+              <input type="password" id="confirmPassword" formControlName="confirmPassword" class="form-control">
+              <div *ngIf="passwordForm.get('confirmPassword')?.invalid && passwordForm.get('confirmPassword')?.touched" class="form-error">
+                Confirm password is required
+              </div>
+              <div *ngIf="passwordForm.errors?.['mismatch'] && !passwordForm.get('confirmPassword')?.invalid && passwordForm.get('confirmPassword')?.touched" class="form-error">
+                Passwords do not match
+              </div>
+            </div>
+            
+            <div class="flex justify-end">
+              <button 
+                type="submit" 
+                [disabled]="passwordForm.invalid || passwordSubmitting"
+                [class.opacity-50]="passwordForm.invalid || passwordSubmitting"
+                class="btn btn-primary px-6"
+              >
+                <span *ngIf="passwordSubmitting">Updating...</span>
+                <span *ngIf="!passwordSubmitting">Change Password</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

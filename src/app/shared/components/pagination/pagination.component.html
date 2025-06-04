@@ -1,0 +1,64 @@
+<div *ngIf="totalPages > 1" class="flex justify-center">
+  <nav class="flex items-center">
+    <!-- Previous Button -->
+    <button 
+      (click)="prevPage()" 
+      [disabled]="currentPage === 1"
+      [class.opacity-50]="currentPage === 1"
+      class="px-3 py-1 mx-1 rounded-md text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-gray-800"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+    </button>
+    
+    <!-- First Page (if not in view) -->
+    <button 
+      *ngIf="pages[0] > 1" 
+      (click)="changePage(1)" 
+      class="hidden sm:block px-3 py-1 mx-1 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-gray-800"
+    >
+      1
+    </button>
+    
+    <!-- Ellipsis (if needed) -->
+    <span *ngIf="pages[0] > 2" class="hidden sm:block px-2 py-1 text-gray-500 dark:text-gray-400">...</span>
+    
+    <!-- Page Numbers -->
+    <button 
+      *ngFor="let page of pages" 
+      (click)="changePage(page)" 
+      [class.bg-red-600]="page === currentPage"
+      [class.text-white]="page === currentPage"
+      [class.dark:bg-red-600]="page === currentPage"
+      [class.dark:text-white]="page === currentPage"
+      class="px-3 py-1 mx-1 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-gray-800"
+    >
+      {{ page }}
+    </button>
+    
+    <!-- Ellipsis (if needed) -->
+    <span *ngIf="pages[pages.length - 1] < totalPages - 1" class="hidden sm:block px-2 py-1 text-gray-500 dark:text-gray-400">...</span>
+    
+    <!-- Last Page (if not in view) -->
+    <button 
+      *ngIf="pages[pages.length - 1] < totalPages" 
+      (click)="changePage(totalPages)" 
+      class="hidden sm:block px-3 py-1 mx-1 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-gray-800"
+    >
+      {{ totalPages }}
+    </button>
+    
+    <!-- Next Button -->
+    <button 
+      (click)="nextPage()" 
+      [disabled]="currentPage === totalPages"
+      [class.opacity-50]="currentPage === totalPages"
+      class="px-3 py-1 mx-1 rounded-md text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-gray-800"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </button>
+  </nav>
+</div>

@@ -1,0 +1,245 @@
+<div class="container p-4 mx-auto">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-semibold text-gray-800 dark:text-white">Drivers</h1>
+    <button 
+      (click)="addDriver()"
+      class="flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none transition-colors"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      </svg>
+      Add Driver
+    </button>
+  </div>
+
+  <!-- Search and Filter Bar -->
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-6">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <!-- Search -->
+      <div class="flex-1">
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+            </svg>
+          </div>
+          <input 
+            type="text" 
+            [(ngModel)]="searchTerm"
+            (keyup.enter)="onSearch()"
+            class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500" 
+            placeholder="Search drivers..."
+          >
+          <button 
+            *ngIf="searchTerm" 
+            (click)="clearSearch()" 
+            class="absolute inset-y-0 right-0 flex items-center pr-3"
+          >
+            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Filters -->
+      <div class="flex flex-wrap gap-2">
+        <button 
+          (click)="onStatusFilterChange('all')" 
+          class="px-3 py-1 text-sm rounded-full transition-colors focus:outline-none" 
+          [class.bg-red-100]="statusFilter === 'all'"
+          [class.text-red-800]="statusFilter === 'all'"
+          [class.dark:bg-red-900]="statusFilter === 'all'"
+          [class.dark:text-red-300]="statusFilter === 'all'"
+          [class.bg-gray-100]="statusFilter !== 'all'"
+          [class.text-gray-800]="statusFilter !== 'all'"
+          [class.dark:bg-gray-700]="statusFilter !== 'all'"
+          [class.dark:text-gray-300]="statusFilter !== 'all'"
+        >
+          All
+        </button>
+        <button 
+          (click)="onStatusFilterChange('Available')" 
+          class="px-3 py-1 text-sm rounded-full transition-colors focus:outline-none" 
+          [class.bg-green-100]="statusFilter === 'Available'"
+          [class.text-green-800]="statusFilter === 'Available'"
+          [class.dark:bg-green-900]="statusFilter === 'Available'"
+          [class.dark:text-green-300]="statusFilter === 'Available'"
+          [class.bg-gray-100]="statusFilter !== 'Available'"
+          [class.text-gray-800]="statusFilter !== 'Available'"
+          [class.dark:bg-gray-700]="statusFilter !== 'Available'"
+          [class.dark:text-gray-300]="statusFilter !== 'Available'"
+        >
+          Available
+        </button>
+        <button 
+          (click)="onStatusFilterChange('On Mission')" 
+          class="px-3 py-1 text-sm rounded-full transition-colors focus:outline-none" 
+          [class.bg-blue-100]="statusFilter === 'On Mission'"
+          [class.text-blue-800]="statusFilter === 'On Mission'"
+          [class.dark:bg-blue-900]="statusFilter === 'On Mission'"
+          [class.dark:text-blue-300]="statusFilter === 'On Mission'"
+          [class.bg-gray-100]="statusFilter !== 'On Mission'"
+          [class.text-gray-800]="statusFilter !== 'On Mission'"
+          [class.dark:bg-gray-700]="statusFilter !== 'On Mission'"
+          [class.dark:text-gray-300]="statusFilter !== 'On Mission'"
+        >
+          On Mission
+        </button>
+        <button 
+          (click)="onStatusFilterChange('On Leave')" 
+          class="px-3 py-1 text-sm rounded-full transition-colors focus:outline-none" 
+          [class.bg-yellow-100]="statusFilter === 'On Leave'"
+          [class.text-yellow-800]="statusFilter === 'On Leave'"
+          [class.dark:bg-yellow-900]="statusFilter === 'On Leave'"
+          [class.dark:text-yellow-300]="statusFilter === 'On Leave'"
+          [class.bg-gray-100]="statusFilter !== 'On Leave'"
+          [class.text-gray-800]="statusFilter !== 'On Leave'"
+          [class.dark:bg-gray-700]="statusFilter !== 'On Leave'"
+          [class.dark:text-gray-300]="statusFilter !== 'On Leave'"
+        >
+          On Leave
+        </button>
+        <button 
+          (click)="onStatusFilterChange('Inactive')" 
+          class="px-3 py-1 text-sm rounded-full transition-colors focus:outline-none" 
+          [class.bg-gray-200]="statusFilter === 'Inactive'"
+          [class.text-gray-800]="statusFilter === 'Inactive'"
+          [class.dark:bg-gray-600]="statusFilter === 'Inactive'"
+          [class.dark:text-gray-300]="statusFilter === 'Inactive'"
+          [class.bg-gray-100]="statusFilter !== 'Inactive'"
+          [class.text-gray-800]="statusFilter !== 'Inactive'"
+          [class.dark:bg-gray-700]="statusFilter !== 'Inactive'"
+          [class.dark:text-gray-300]="statusFilter !== 'Inactive'"
+        >
+          Inactive
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Indicator -->
+  <div *ngIf="loading" class="flex justify-center py-8">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-700"></div>
+  </div>
+  
+  <!-- Drivers List -->
+  <div *ngIf="!loading" class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+    <!-- Empty State -->
+    <div *ngIf="filteredDrivers.length === 0" class="p-8 text-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+      </svg>
+      <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-white">No drivers found</h3>
+      <p class="mt-1 text-gray-500 dark:text-gray-400">Try adjusting your search or filter to find what you're looking for.</p>
+    </div>
+    
+    <!-- Drivers Table -->
+    <div *ngIf="filteredDrivers.length > 0" class="overflow-x-auto">
+      <table class="w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <thead class="bg-gray-50 dark:bg-gray-700">
+          <tr>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer" (click)="onSort('name')">
+              <div class="flex items-center">
+                <span>Driver</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="getSortIcon('name')" />
+                </svg>
+              </div>
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer" (click)="onSort('licenseNumber')">
+              <div class="flex items-center">
+                <span>License</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="getSortIcon('licenseNumber')" />
+                </svg>
+              </div>
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer" (click)="onSort('status')">
+              <div class="flex items-center">
+                <span>Status</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="getSortIcon('status')" />
+                </svg>
+              </div>
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer" (click)="onSort('experience')">
+              <div class="flex items-center">
+                <span>Experience</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="getSortIcon('experience')" />
+                </svg>
+              </div>
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+          <tr *ngFor="let driver of displayedDrivers" class="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer" (click)="viewDriver(driver._id)">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <div class="flex-shrink-0 h-10 w-10 relative">
+                  <div class="h-10 w-10 rounded-full bg-red-100 dark:bg-red-900 flex items-center justify-center text-red-700 dark:text-red-300 overflow-hidden">
+                    <span *ngIf="!driver.profileImage" class="text-sm font-medium">{{ driver.user.name.charAt(0) }}{{ driver.user.name.split(' ')[1]?.charAt(0) || '' }}</span>
+                    <img *ngIf="driver.profileImage" [src]="driver.profileImage" alt="{{ driver.user.name }}" class="h-10 w-10 object-cover">
+                  </div>
+                </div>
+                <div class="ml-4">
+                  <div class="text-sm font-medium text-gray-900 dark:text-white">{{ driver.user.name }}</div>
+                  <div class="text-sm text-gray-500 dark:text-gray-400">{{ driver.user.email }}</div>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-900 dark:text-white">{{ driver.licenseNumber }}</div>
+              <div class="text-sm text-gray-500 dark:text-gray-400">Expires: {{ driver.licenseExpiry | date:'mediumDate' }}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span [class]="'px-2 inline-flex text-xs leading-5 font-semibold rounded-full ' + getStatusColor(driver.status)">
+                {{ driver.status }}
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+              {{ driver.experience }} years
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex gap-2 items-center">
+              <button (click)="viewDriver(driver._id); $event.stopPropagation()" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300" title="View">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+              </button>
+              <button (click)="editDriver(driver._id, $event)" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300" title="Edit">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+              </button>
+              <button (click)="blockDriver(driver._id, $event)" class="text-yellow-600 hover:text-yellow-900 dark:text-yellow-400 dark:hover:text-yellow-300" title="Block">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-12.728 12.728M5.636 5.636l12.728 12.728" />
+                </svg>
+              </button>
+              <button (click)="deleteDriver(driver._id, $event)" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" title="Delete">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Pagination -->
+    <app-pagination
+      *ngIf="totalItems > itemsPerPage"
+      [currentPage]="currentPage"
+      [totalItems]="totalItems"
+      [itemsPerPage]="itemsPerPage"
+      (pageChanged)="onPageChange($event)"
+      class="py-4"
+    ></app-pagination>
+  </div>
+</div>

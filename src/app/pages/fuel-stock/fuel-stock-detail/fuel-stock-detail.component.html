@@ -1,0 +1,55 @@
+<div class="container p-4 mx-auto max-w-xl">
+  <h1 class="text-3xl font-bold text-gray-800 dark:text-white mb-8 flex items-center gap-2">
+    <svg class="h-8 w-8 text-red-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 20.5A8.5 8.5 0 103.5 12a8.5 8.5 0 008.5 8.5z"/></svg>
+    Fuel Stock Details
+  </h1>
+  <div *ngIf="loading" class="flex justify-center py-8">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-700"></div>
+  </div>
+  <div *ngIf="!loading && fuelStock">
+    <div class="bg-white dark:bg-gray-800 shadow-lg rounded-xl p-8">
+      <div class="mb-6 flex items-center gap-3">
+        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"
+              [ngClass]="fuelStock.transaction_type === 'in' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'">
+          <svg *ngIf="fuelStock.transaction_type === 'in'" class="h-4 w-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+          <svg *ngIf="fuelStock.transaction_type === 'out'" class="h-4 w-4 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4"/></svg>
+          {{ fuelStock.transaction_type | titlecase }}
+        </span>
+        <span class="text-gray-500 dark:text-gray-400 text-xs">{{ fuelStock.date | date:'medium' }}</span>
+      </div>
+      <div class="mb-6 flex items-center gap-3">
+        <svg class="h-5 w-5 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 01-8 0"/></svg>
+        <span class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Quantity</span>
+        <span class="text-2xl font-bold text-gray-900 dark:text-white ml-2">{{ fuelStock.quantity }}</span>
+      </div>
+      <div class="mb-6 flex items-center gap-3">
+        <svg class="h-5 w-5 text-yellow-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 20.5A8.5 8.5 0 103.5 12a8.5 8.5 0 008.5 8.5z"/></svg>
+        <span class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Fuel Type</span>
+        <span class="text-lg font-semibold text-gray-900 dark:text-white ml-2">{{ fuelStock.fueltype | titlecase }}</span>
+      </div>
+      <div class="mb-6 flex items-center gap-3">
+        <svg class="h-5 w-5 text-purple-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 17v-5a2 2 0 012-2h2a2 2 0 012 2v5m4 0v-5a2 2 0 012-2h2a2 2 0 012 2v5"/></svg>
+        <span class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Vehicle</span>
+        <span class="text-lg font-semibold text-gray-900 dark:text-white ml-2">
+          <ng-container *ngIf="fuelStock.vehicle as vehicle">
+            <ng-container *ngIf="vehicle && typeof vehicle === 'object' && vehicle !== null; else showString">
+              {{ vehicle.name }}
+            </ng-container>
+            <ng-template #showString>
+              {{ vehicle ? vehicle : '-' }}
+            </ng-template>
+          </ng-container>
+          <ng-container *ngIf="!fuelStock.vehicle">-</ng-container>
+        </span>
+      </div>
+      <div class="mb-6 flex items-center gap-3">
+        <svg class="h-5 w-5 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 01-8 0"/></svg>
+        <span class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Supplier</span>
+        <span class="text-lg font-semibold text-gray-900 dark:text-white ml-2">{{ fuelStock.supplier || '-' }}</span>
+      </div>
+      <div class="flex justify-end mt-8">
+        <button (click)="goBack()" class="btn btn-secondary">Back</button>
+      </div>
+    </div>
+  </div>
+</div>

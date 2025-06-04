@@ -1,0 +1,9 @@
+// Additional styling for the header component
+.user-menu-enter-active, .user-menu-leave-active {
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.user-menu-enter, .user-menu-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}

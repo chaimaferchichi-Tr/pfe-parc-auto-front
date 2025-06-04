@@ -1,0 +1,109 @@
+<div class="container p-4 mx-auto">
+  <!-- Page Header -->
+  <div class="flex items-center mb-6">
+    <button 
+      (click)="cancel()" 
+      class="mr-4 flex items-center justify-center h-10 w-10 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+    </button>
+    <h1 class="text-2xl font-semibold text-gray-800 dark:text-white">{{ isEditMode ? 'Edit Driver' : 'Add New Driver' }}</h1>
+  </div>
+
+  <!-- Loading Indicator -->
+  <div *ngIf="loading" class="flex justify-center py-8">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-700"></div>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error && !loading" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded" role="alert">
+    <p class="font-bold">Error</p>
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- Driver Form -->
+  <div *ngIf="!loading" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+    <form [formGroup]="driverForm" (ngSubmit)="onSubmit()">
+      <!-- User Dropdown or View -->
+      <div class="mb-4">
+        <label for="user" class="form-label">Full Name</label>
+        <ng-container *ngIf="!isEditMode; else viewOnlyUser">
+          <select id="user" formControlName="user" class="form-control">
+            <option value="" disabled>Select a driver</option>
+            <option *ngFor="let user of users" [value]="user._id">{{ user.name }} {{ user.lastname }}</option>
+          </select>
+          <div *ngIf="driverForm.get('user')?.invalid && driverForm.get('user')?.touched" class="form-error">
+            Driver is required
+          </div>
+        </ng-container>
+        <ng-template #viewOnlyUser>
+          <input type="text" class="form-control bg-gray-100 dark:bg-gray-700 cursor-not-allowed" [value]="getSelectedUserFullName()" disabled>
+        </ng-template>
+      </div>
+      <!-- Phone Field -->
+      <div class="mb-4">
+        <label for="phone" class="form-label">Phone</label>
+        <input type="tel" id="phone" formControlName="phone" class="form-control" placeholder="Enter phone number">
+        <div *ngIf="driverForm.get('phone')?.invalid && driverForm.get('phone')?.touched" class="form-error">
+          Phone number is required
+        </div>
+      </div>
+      <!-- License Number Field -->
+      <div class="mb-4">
+        <label for="licenseNumber" class="form-label">License Number</label>
+        <input type="text" id="licenseNumber" formControlName="licenseNumber" class="form-control" placeholder="Enter license number">
+        <div *ngIf="driverForm.get('licenseNumber')?.invalid && driverForm.get('licenseNumber')?.touched" class="form-error">
+          License number is required
+        </div>
+      </div>
+      <!-- License Expiry Field -->
+      <div class="mb-4">
+        <label for="licenseExpiry" class="form-label">License Expiry</label>
+        <input type="date" id="licenseExpiry" formControlName="licenseExpiry" class="form-control">
+        <div *ngIf="driverForm.get('licenseExpiry')?.invalid && driverForm.get('licenseExpiry')?.touched" class="form-error">
+          License expiry date is required
+        </div>
+      </div>
+      <!-- Status Field -->
+      <div class="mb-4">
+        <label for="status" class="form-label">Status</label>
+        <select id="status" formControlName="status" class="form-control">
+          <option *ngFor="let status of statusOptions" [value]="status">{{ status }}</option>
+        </select>
+      </div>
+      <!-- Experience Field -->
+      <div class="mb-4">
+        <label for="experience" class="form-label">Experience (years)</label>
+        <input type="number" id="experience" formControlName="experience" class="form-control" min="0" placeholder="Enter years of experience">
+      </div>
+      <!-- Profile Image Field -->
+      <div class="mb-4">
+        <label for="profileImage" class="form-label">Profile Image</label>
+        <input type="text" id="profileImage" formControlName="profileImage" class="form-control" placeholder="Image URL or filename">
+      </div>
+      <!-- Notes Field -->
+      <div class="mb-6">
+        <label for="notes" class="form-label">Notes</label>
+        <textarea id="notes" formControlName="notes" class="form-control" rows="3" placeholder="Enter notes"></textarea>
+      </div>
+      <!-- Form Actions -->
+      <div class="flex justify-end space-x-4">
+        <button type="button" (click)="cancel()" class="btn btn-secondary">Cancel</button>
+        <button type="submit" [disabled]="submitting" [class.opacity-50]="submitting" class="btn btn-primary">
+          <span *ngIf="submitting">
+            <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Saving...
+          </span>
+          <span *ngIf="!submitting">
+            {{ isEditMode ? 'Update Driver' : 'Save Driver' }}
+          </span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

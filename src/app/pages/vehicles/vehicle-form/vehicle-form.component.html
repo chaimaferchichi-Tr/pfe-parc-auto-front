@@ -1,0 +1,235 @@
+<div class="container mx-auto px-4 py-6">
+  <!-- Back button and title -->
+  <div class="mb-6">
+    <button (click)="cancel()" class="flex items-center text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 mb-4">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+      </svg>
+      Cancel
+    </button>
+    <h1 class="text-2xl font-semibold text-gray-800 dark:text-white">{{ isEditMode ? 'Edit Vehicle' : 'Add New Vehicle' }}</h1>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex justify-center items-center py-10">
+    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error" class="mb-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 dark:bg-red-900 dark:text-red-200">
+    {{ error }}
+  </div>
+
+  <!-- Vehicle Form -->
+  <div *ngIf="!loading" class="bg-white dark:bg-gray-800 shadow-md rounded-lg overflow-hidden">
+    <form [formGroup]="vehicleForm" (ngSubmit)="onSubmit()" class="p-6">
+      <!-- Basic Information Section -->
+      <div class="mb-6">
+        <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Basic Information</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Name -->
+          <div>
+            <label for="name" class="form-label">Vehicle Name</label>
+            <input 
+              type="text" 
+              id="name" 
+              formControlName="name" 
+              class="form-control" 
+              placeholder="Enter vehicle name"
+            >
+            <div *ngIf="nameControl?.invalid && nameControl?.touched" class="form-error">
+              <span *ngIf="nameControl?.errors?.['required']">Vehicle name is required</span>
+            </div>
+          </div>
+
+          <!-- Type -->
+          <div>
+            <label for="type" class="form-label">Vehicle Type</label>
+            <select id="type" formControlName="type" class="form-control">
+              <option *ngFor="let type of vehicleTypes" [value]="type">{{ type }}</option>
+            </select>
+            <div *ngIf="typeControl?.invalid && typeControl?.touched" class="form-error">
+              <span *ngIf="typeControl?.errors?.['required']">Vehicle type is required</span>
+            </div>
+          </div>
+
+          <!-- License Plate -->
+          <div>
+            <label for="licensePlate" class="form-label">License Plate</label>
+            <input 
+              type="text" 
+              id="licensePlate" 
+              formControlName="licensePlate" 
+              class="form-control uppercase" 
+              placeholder="Enter license plate number"
+            >
+            <div *ngIf="licensePlateControl?.invalid && licensePlateControl?.touched" class="form-error">
+              <span *ngIf="licensePlateControl?.errors?.['required']">License plate is required</span>
+              <span *ngIf="licensePlateControl?.errors?.['pattern']">License plate should contain only uppercase letters, numbers, and hyphens</span>
+            </div>
+          </div>
+
+          <!-- Registration Number -->
+          <div>
+            <label for="registrationNumber" class="form-label">Registration Number</label>
+            <input 
+              type="text" 
+              id="registrationNumber" 
+              formControlName="registrationNumber" 
+              class="form-control uppercase" 
+              placeholder="Enter registration number"
+            >
+            <div *ngIf="vehicleForm.get('registrationNumber')?.invalid && vehicleForm.get('registrationNumber')?.touched" class="form-error">
+              <span *ngIf="vehicleForm.get('registrationNumber')?.errors?.['required']">Registration number is required</span>
+            </div>
+          </div>
+
+          <!-- Status -->
+          <div>
+            <label for="status" class="form-label">Status</label>
+            <select id="status" formControlName="status" class="form-control">
+              <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
+            </select>
+            <div *ngIf="statusControl?.invalid && statusControl?.touched" class="form-error">
+              <span *ngIf="statusControl?.errors?.['required']">Status is required</span>
+            </div>
+          </div>
+
+          <!-- Fuel Type -->
+          <div>
+            <label for="fuelType" class="form-label">Fuel Type</label>
+            <select id="fuelType" formControlName="fuelType" class="form-control">
+              <option *ngFor="let fuel of fuelTypes" [value]="fuel">{{ fuel }}</option>
+            </select>
+            <div *ngIf="fuelTypeControl?.invalid && fuelTypeControl?.touched" class="form-error">
+              <span *ngIf="fuelTypeControl?.errors?.['required']">Fuel type is required</span>
+            </div>
+          </div>
+
+          <!-- Mileage -->
+          <div>
+            <label for="mileage" class="form-label">Current Mileage (km)</label>
+            <input 
+              type="number" 
+              id="mileage" 
+              formControlName="mileage" 
+              class="form-control" 
+              min="0"
+              placeholder="Enter current mileage"
+            >
+            <div *ngIf="mileageControl?.invalid && mileageControl?.touched" class="form-error">
+              <span *ngIf="mileageControl?.errors?.['required']">Mileage is required</span>
+              <span *ngIf="mileageControl?.errors?.['min']">Mileage must be a positive number</span>
+            </div>
+          </div>
+
+          <!-- Model -->
+          <div>
+            <label for="model" class="form-label">Vehicle Model</label>
+            <input 
+              type="text" 
+              id="model" 
+              formControlName="model" 
+              class="form-control" 
+              placeholder="Enter vehicle model"
+            >
+            <div *ngIf="vehicleForm.get('model')?.invalid && vehicleForm.get('model')?.touched" class="form-error">
+              <span *ngIf="vehicleForm.get('model')?.errors?.['required']">Vehicle model is required</span>
+            </div>
+          </div>
+
+          <!-- Year -->
+          <div>
+            <label for="year" class="form-label">Manufacturing Year</label>
+            <input 
+              type="number" 
+              id="year" 
+              formControlName="year" 
+              class="form-control" 
+              placeholder="Enter manufacturing year"
+            >
+            <div *ngIf="vehicleForm.get('year')?.invalid && vehicleForm.get('year')?.touched" class="form-error">
+              <span *ngIf="vehicleForm.get('year')?.errors?.['required']">Manufacturing year is required</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Maintenance Information Section -->
+      <div *ngIf="isEditMode" class="mb-6">
+        <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Maintenance Information</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Purchase Date -->
+          <div>
+            <label for="purchaseDate" class="form-label">Purchase Date</label>
+            <input 
+              type="date" 
+              id="purchaseDate" 
+              formControlName="purchaseDate" 
+              class="form-control"
+            >
+            <div *ngIf="purchaseDateControl?.invalid && purchaseDateControl?.touched" class="form-error">
+              <span *ngIf="purchaseDateControl?.errors?.['required']">Purchase date is required</span>
+            </div>
+          </div>
+
+          <!-- Last Maintenance -->
+          <div>
+            <label for="lastMaintenance" class="form-label">Last Maintenance</label>
+            <input 
+              type="date" 
+              id="lastMaintenance" 
+              formControlName="lastMaintenance" 
+              class="form-control"
+            >
+            <div *ngIf="lastMaintenanceControl?.invalid && lastMaintenanceControl?.touched" class="form-error">
+              <span *ngIf="lastMaintenanceControl?.errors?.['required']">Last maintenance date is required</span>
+            </div>
+          </div>
+
+          <!-- Next Maintenance -->
+          <div>
+            <label for="nextMaintenance" class="form-label">Next Maintenance</label>
+            <input 
+              type="date" 
+              id="nextMaintenance" 
+              formControlName="nextMaintenance" 
+              class="form-control"
+            >
+            <div *ngIf="nextMaintenanceControl?.invalid && nextMaintenanceControl?.touched" class="form-error">
+              <span *ngIf="nextMaintenanceControl?.errors?.['required']">Next maintenance date is required</span>
+            </div>
+          </div>
+
+          <!-- Assigned Driver -->
+          <div>
+            <label for="assignedTo" class="form-label">Assigned Driver</label>
+            <select id="assignedTo" formControlName="assignedTo" class="form-control">
+              <option [ngValue]="null">Not Assigned</option>
+              <option *ngFor="let driver of drivers" [value]="driver._id">{{ driver.name }}</option>
+            </select>
+            <div *ngIf="loadingDrivers" class="text-sm text-gray-500 dark:text-gray-400 mt-1">Loading drivers...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="flex justify-end space-x-4 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+        <button 
+          type="reset" 
+          (click)="cancel()" 
+          class="btn btn-secondary">
+          Cancel
+        </button>
+        <button 
+          type="submit" 
+          class="btn btn-primary">
+          <span *ngIf="submitting" class="inline-block mr-2">
+            <div class="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
+          </span>
+          {{ isEditMode ? 'Update Vehicle' : 'Add Vehicle' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

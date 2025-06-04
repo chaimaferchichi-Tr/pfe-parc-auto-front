@@ -1,0 +1,342 @@
+<div class="container mx-auto px-4 py-6">
+  <div
+    class="flex flex-col md:flex-row md:items-center md:justify-between mb-6"
+  >
+    <h1
+      class="text-2xl font-semibold text-gray-800 dark:text-white mb-4 md:mb-0"
+    >
+      Users
+    </h1>
+
+    <div class="flex flex-col sm:flex-row gap-4">
+      <!-- Search Box -->
+      <div class="relative">
+        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+          <svg
+            class="w-4 h-4 text-gray-500 dark:text-gray-400"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 20 20"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+            />
+          </svg>
+        </div>
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          (keyup.enter)="onSearchChange(searchTerm)"
+          (input)="onSearchChange(searchTerm)"
+          class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500"
+          placeholder="Search users..."
+        />
+        <button
+          *ngIf="searchTerm"
+          (click)="searchTerm=''; onSearchChange('')"
+          class="absolute inset-y-0 right-0 flex items-center pr-3"
+          type="button"
+        >
+          <svg
+            class="w-4 h-4 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Add New User Button -->
+      <button
+        (click)="addNewUser()"
+        class="btn btn-primary flex items-center justify-center"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 mr-2"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+          />
+        </svg>
+        Add New User
+      </button>
+    </div>
+  </div>
+
+  <!-- Error Message -->
+  <div
+    *ngIf="error"
+    class="mb-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 dark:bg-red-900 dark:text-red-200"
+  >
+    {{ error }}
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex justify-center items-center py-10">
+    <div
+      class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"
+    ></div>
+  </div>
+
+  <!-- Users Table -->
+  <div
+    *ngIf="!loading"
+    class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden"
+  >
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <thead class="bg-gray-50 dark:bg-gray-700">
+          <tr>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+            >
+              Name
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+            >
+              Email
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider hidden sm:table-cell"
+            >
+              Role
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider hidden md:table-cell"
+            >
+              Status
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider hidden lg:table-cell"
+            >
+              Created
+            </th>
+            <th
+              scope="col"
+              class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+            >
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody
+          class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700"
+        >
+          <tr
+            *ngFor="let user of paginatedUsers"
+            class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+          >
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="flex items-center">
+                <div
+                  class="flex-shrink-0 h-10 w-10 rounded-full bg-red-600 flex items-center justify-center text-white"
+                >
+                  <span class="text-sm font-medium"
+                    >{{ user.name.charAt(0) }}{{ user.name.split(' ')[1] ? user.name.split(' ')[1].charAt(0) : '' }}</span
+                  >
+                </div>
+                <div class="ml-4">
+                  <div
+                    class="text-sm font-medium text-gray-900 dark:text-white"
+                  >
+                    {{ user.name }}
+                  </div>
+                  <div
+                    class="text-sm text-gray-500 dark:text-gray-400 sm:hidden"
+                  >
+                    {{ user.email }}
+                  </div>
+                  <div
+                    class="text-sm text-gray-500 dark:text-gray-400 md:hidden sm:block hidden"
+                  >
+                    {{ user.role }}
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap hidden sm:table-cell">
+              <div class="text-sm text-gray-900 dark:text-white">
+                {{ user.email }}
+              </div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap hidden sm:table-cell">
+              <span
+                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200"
+              >
+                {{ user.role }}
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap hidden md:table-cell">
+              <span
+                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                [ngClass]="{
+                  'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200':
+                    user.statuts_account === 'active',
+                  'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200':
+                    user.statuts_account === 'inactive',
+                }"
+              >
+                {{ user.statuts_account }}
+              </span>
+            </td>
+            <td
+              class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 hidden lg:table-cell"
+            >
+              {{ user.createdAt  }}
+            </td>
+            <td
+              class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"
+            >
+              <div class="flex justify-end space-x-2">
+                <button
+                  (click)="viewUser(user._id)"
+                  class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300"
+                  title="View details"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                    />
+                  </svg>
+                </button>
+                <button
+                  (click)="editUser(user._id)"
+                  class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300"
+                  title="Edit user"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                    />
+                  </svg>
+                </button>
+                <button
+                  (click)="deleteUser(user._id)"
+                  class="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300"
+                  title="Delete user"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    />
+                  </svg>
+                </button>
+                <button
+                  (click)="blockUser(user._id)"
+                  class="text-yellow-600 dark:text-yellow-400 hover:text-yellow-900 dark:hover:text-yellow-300"
+                  title="Block user"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-12.728 12.728M5.636 5.636l12.728 12.728" />
+                  </svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Empty state -->
+          <tr *ngIf="paginatedUsers.length === 0">
+            <td
+              colspan="6"
+              class="px-6 py-10 text-center text-gray-500 dark:text-gray-400"
+            >
+              <div class="flex flex-col items-center justify-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-10 w-10 mb-4 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+                  />
+                </svg>
+                <p class="text-lg">No users found</p>
+                <p class="text-sm mt-1" *ngIf="searchTerm">
+                  Try using different search terms or clear the search
+                </p>
+                <p class="text-sm mt-1" *ngIf="!searchTerm">
+                  Click "Add New User" to create your first user
+                </p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="mt-6">
+    <app-pagination
+      [totalItems]="totalItems"
+      [itemsPerPage]="itemsPerPage"
+      [currentPage]="currentPage"
+      (pageChanged)="onPageChange($event)"
+    ></app-pagination>
+  </div>
+</div>

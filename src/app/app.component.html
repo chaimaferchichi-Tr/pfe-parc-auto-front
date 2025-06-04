@@ -1,0 +1,26 @@
+<!-- Authentication pages without header and sidebar -->
+<div *ngIf="isAuthPage" class="min-h-screen bg-gray-100 dark:bg-gray-900 dark-transition">
+  <router-outlet></router-outlet>
+</div>
+
+<!-- Main layout wrapper for authenticated pages -->
+<div *ngIf="!isAuthPage" class="flex flex-col min-h-screen bg-gray-100 dark:bg-gray-900 dark-transition">
+  
+  <!-- Header -->
+  <app-header 
+    [isSidebarOpen]="isSidebarOpen" 
+    (toggleSidebar)="toggleSidebar()"
+    class="fixed top-0 left-0 right-0 z-50"
+  ></app-header>
+  
+  <!-- Sidebar -->
+  <app-sidebar 
+    [isOpen]="isSidebarOpen"
+    (toggleSidebar)="toggleSidebar()"
+  ></app-sidebar>
+  
+  <!-- Main Content -->
+  <main class="flex-grow mt-16 transition-all duration-300" [class.lg:ml-64]="isSidebarOpen">
+    <router-outlet></router-outlet>
+  </main>
+</div>

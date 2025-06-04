@@ -1,0 +1,148 @@
+<div class="flex h-screen bg-gray-100 dark:bg-gray-900 overflow-hidden">
+  <!-- Left Panel: Signup Form -->
+  <div class="w-full md:w-1/2 flex flex-col p-8 md:p-12 justify-center overflow-y-auto">
+    <div class="max-w-md w-full mx-auto">
+      <!-- Logo & Title -->
+      <div class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-800 dark:text-white">Create Account</h1>
+        <p class="mt-2 text-gray-600 dark:text-gray-400">Sign up to start managing your fleet</p>
+      </div>
+      
+      <!-- Error Message -->
+      <div *ngIf="error" class="mb-6 p-4 text-sm text-red-800 bg-red-100 rounded-lg dark:bg-red-900 dark:text-red-300" role="alert">
+        {{ error }}
+      </div>
+      
+      <!-- Signup Form -->
+      <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="space-y-6">
+        <!-- Full Name Field -->
+        <div>
+          <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
+          <input 
+            type="text" 
+            formControlName="name" 
+            id="name" 
+            class="block w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            [ngClass]="{ 'border-red-500': submitted && f['name'].errors }"
+            placeholder="Enter your full name"
+          >
+          <div *ngIf="submitted && f['name'].errors" class="mt-1 text-sm text-red-600 dark:text-red-400">
+            <div *ngIf="f['name'].errors['required']">Full name is required</div>
+            <div *ngIf="f['name'].errors['minlength']">Full name must be at least 3 characters</div>
+          </div>
+        </div>
+        
+        <!-- Email Field -->
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+          <input 
+            type="email" 
+            formControlName="email" 
+            id="email" 
+            class="block w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            [ngClass]="{ 'border-red-500': submitted && f['email'].errors }"
+            placeholder="Enter your email"
+          >
+          <div *ngIf="submitted && f['email'].errors" class="mt-1 text-sm text-red-600 dark:text-red-400">
+            <div *ngIf="f['email'].errors['required']">Email is required</div>
+            <div *ngIf="f['email'].errors['email']">Please enter a valid email address</div>
+          </div>
+        </div>
+        
+        <!-- Password Field -->
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
+          <input 
+            type="password" 
+            formControlName="password" 
+            id="password" 
+            class="block w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            [ngClass]="{ 'border-red-500': submitted && f['password'].errors }"
+            placeholder="Create a password"
+          >
+          <div *ngIf="submitted && f['password'].errors" class="mt-1 text-sm text-red-600 dark:text-red-400">
+            <div *ngIf="f['password'].errors['required']">Password is required</div>
+            <div *ngIf="f['password'].errors['minlength']">Password must be at least 6 characters</div>
+          </div>
+        </div>
+        
+        <!-- Confirm Password Field -->
+        <div>
+          <label for="confirmPassword" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Confirm Password</label>
+          <input 
+            type="password" 
+            formControlName="confirmPassword" 
+            id="confirmPassword" 
+            class="block w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+            [ngClass]="{ 'border-red-500': submitted && (f['confirmPassword'].errors || signupForm.hasError('passwordMismatch')) }"
+            placeholder="Confirm your password"
+          >
+          <div *ngIf="submitted && (f['confirmPassword'].errors || signupForm.hasError('passwordMismatch'))" class="mt-1 text-sm text-red-600 dark:text-red-400">
+            <div *ngIf="f['confirmPassword'].errors?.['required']">Please confirm your password</div>
+            <div *ngIf="signupForm.hasError('passwordMismatch')">Passwords do not match</div>
+          </div>
+        </div>
+        
+        <!-- Signup Button -->
+        <button 
+          type="submit" 
+          class="w-full py-3 px-4 text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 rounded-lg transition-colors"
+          [disabled]="loading"
+        >
+          <span *ngIf="loading" class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent mr-2 align-[-0.125em]"></span>
+          {{ loading ? 'Creating Account...' : 'Create Account' }}
+        </button>
+      </form>
+      
+      <!-- Login Link -->
+      <div class="mt-8 text-center">
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+          Already have an account? 
+          <a routerLink="/auth/login" class="font-medium text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">Log in</a>
+        </p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Right Panel: Hero Image -->
+  <div class="hidden md:block md:w-1/2 relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-red-900/90 to-gray-900/90 z-10"></div>
+    <div class="absolute inset-0 p-12 flex flex-col justify-center z-20">
+      <div class="text-white">
+        <h2 class="text-4xl font-bold mb-6">Join Our Fleet Management Platform</h2>
+        <p class="text-xl mb-8">Take control of your fleet operations with our powerful management system.</p>
+        <ul class="space-y-3">
+          <li class="flex items-center">
+            <svg class="h-5 w-5 mr-3 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+            <span>Intuitive dashboard analytics</span>
+          </li>
+          <li class="flex items-center">
+            <svg class="h-5 w-5 mr-3 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+            <span>Smart mission assignment</span>
+          </li>
+          <li class="flex items-center">
+            <svg class="h-5 w-5 mr-3 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+            <span>Detailed cost monitoring</span>
+          </li>
+          <li class="flex items-center">
+            <svg class="h-5 w-5 mr-3 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+            <span>Secure user management</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <img 
+      src="assets/fleet-vehicles.svg" 
+      alt="Fleet of vehicles" 
+      class="absolute inset-0 w-full h-full object-cover"
+    >
+  </div>
+</div>

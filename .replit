@@ -1,0 +1,32 @@
+modules = ["nodejs-20"]
+
+[nix]
+channel = "stable-24_05"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Angular Fleet Management System"
+
+[[workflows.workflow]]
+name = "Angular Fleet Management System"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm install && npx ng serve --host 0.0.0.0 --port 5000 --disable-host-check"
+waitForPort = 5000
+
+[deployment]
+run = ["sh", "-c", "npm install -g @angular/cli && echo \"n\" | ng analytics off && npm install && ng serve --host 0.0.0.0 --port 5000"]
+
+[[ports]]
+localPort = 5000
+externalPort = 80

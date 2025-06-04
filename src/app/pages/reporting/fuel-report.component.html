@@ -1,0 +1,51 @@
+<div class="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-8 max-w-2xl mx-auto">
+  <h2 class="text-2xl font-bold mb-6 text-center text-gray-800 dark:text-white tracking-wide">{{ title }}</h2>
+  <!-- Filters -->
+  <div class="mb-8 flex flex-wrap gap-4 justify-center items-center">
+    <ng-container [ngSwitch]="reportType">
+      <select *ngSwitchCase="'fuel-vehicle'" class="border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-red-400 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-400 transition-colors" [(ngModel)]="selectedVehicle">
+        <option value="" class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100">Select Vehicle</option>
+        <option *ngFor="let v of vehicles" [value]="v._id" class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100">{{ v.name || v.licensePlate }}</option>
+      </select>
+      <select *ngSwitchCase="'fuel-driver'" class="border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-red-400 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-400 transition-colors" [(ngModel)]="selectedDriver">
+        <option value="" class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100">Select Driver</option>
+        <option *ngFor="let d of drivers" [value]="d._id" class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100">{{ d.user?.name || d.name }}</option>
+      </select>
+      <select *ngSwitchCase="'fuel-mission'" class="border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-red-400 bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-400 transition-colors" [(ngModel)]="selectedMission">
+        <option value="" class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100">Select Mission</option>
+        <option *ngFor="let m of missions" [value]="m._id" class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100">{{ m.title || m._id }}</option>
+      </select>
+    </ng-container>
+    <button (click)="fetchFuelData()" class="bg-blue-600 text-white px-6 py-2 rounded-lg text-lg font-semibold shadow hover:bg-blue-700 transition">View Report</button>
+  </div>
+  <div class="flex gap-4 mb-6 justify-center">
+    <button (click)="generatePDF()" class="bg-red-600 text-white px-5 py-2 rounded-lg font-semibold shadow hover:bg-red-700 transition">Generate PDF</button>
+    <button (click)="generateExcel()" class="bg-green-600 text-white px-5 py-2 rounded-lg font-semibold shadow hover:bg-green-700 transition">Generate Excel</button>
+  </div>
+  <div *ngIf="loading" class="text-center text-gray-500 dark:text-gray-400 text-lg py-8">Loading...</div>
+  <div *ngIf="!loading && fuelData.length > 0" class="overflow-x-auto">
+    <table class="min-w-full bg-white dark:bg-gray-900 rounded-xl overflow-hidden shadow border border-gray-200 dark:border-gray-700">
+      <thead>
+        <tr class="bg-gray-50 dark:bg-gray-800">
+          <th class="px-8 py-4 text-lg font-bold text-gray-700 dark:text-gray-200 text-center">Quantity (L)</th>
+          <th class="px-8 py-4 text-lg font-bold text-gray-700 dark:text-gray-200 text-center">Cost</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let record of fuelData; let i = index" [ngClass]="i % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-50 dark:bg-gray-800'">
+          <td class="px-8 py-4 text-xl text-center font-semibold text-gray-900 dark:text-white">{{ record.totalQuantity || record.quantity || 0 }}</td>
+          <td class="px-8 py-4 text-xl text-center font-semibold text-gray-900 dark:text-white">{{ record.totalCost || record.cost || 0 }}</td>
+        </tr>
+      </tbody>
+      <tfoot *ngIf="fuelData.length > 1">
+        <tr class="bg-gray-100 dark:bg-gray-800">
+          <td class="px-8 py-4 text-lg font-bold text-gray-800 dark:text-gray-100 text-center">Total</td>
+          <td class="px-8 py-4 text-lg font-bold text-gray-800 dark:text-gray-100 text-center">
+            {{ totalCost }}
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+  <div *ngIf="!loading && fuelData.length === 0" class="mt-8 text-center text-gray-500 dark:text-gray-400 text-lg italic">No data to display.</div>
+</div>

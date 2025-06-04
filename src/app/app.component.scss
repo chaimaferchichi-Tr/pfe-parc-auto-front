@@ -1,0 +1,9 @@
+/* App component specific styles */
+:host {
+  display: block;
+  height: 100%;
+}
+
+.sidebar-transition {
+  transition: margin-left 0.3s ease;
+}

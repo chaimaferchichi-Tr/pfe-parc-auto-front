@@ -1,0 +1,14 @@
+// Additional styles for sidebar
+.sidebar-enter-active, .sidebar-leave-active {
+  transition: transform 0.3s ease;
+}
+
+.sidebar-enter, .sidebar-leave-to {
+  transform: translateX(-100%);
+}
+
+// For smooth width transition
+aside {
+  transition: width 0.3s ease;
+  overflow: hidden;
+}

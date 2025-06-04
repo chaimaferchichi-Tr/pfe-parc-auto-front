@@ -1,0 +1,86 @@
+<div class="container mx-auto px-4 py-6">
+  <div class="flex items-center mb-6">
+    <button (click)="goBack()" class="mr-4 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+    </button>
+    <h1 class="text-2xl font-semibold text-gray-800 dark:text-white">Maintenance Details</h1>
+    <div class="flex ml-auto space-x-3" *ngIf="maintenance as m">
+      <button (click)="editMaintenance(m._id)" class="btn btn-secondary flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+        </svg>
+        Edit
+      </button>
+    </div>
+  </div>
+  <div *ngIf="loading" class="flex justify-center items-center py-10">
+    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
+  </div>
+  <div *ngIf="error" class="mb-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 dark:bg-red-900 dark:text-red-200">{{ error }}</div>
+  <div *ngIf="maintenance as m" class="max-w-4xl mx-auto">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+      <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="text-lg font-medium text-gray-800 dark:text-white mb-4">Basic Information</h3>
+          <div class="mb-4">
+            <p class="text-sm text-gray-500 dark:text-gray-400">Title</p>
+            <p class="text-gray-800 dark:text-white font-medium">{{ m.title }}</p>
+          </div>
+          <div class="mb-4">
+            <p class="text-sm text-gray-500 dark:text-gray-400">Type</p>
+            <p class="text-gray-800 dark:text-white font-medium">{{ m.maintenanceType }}</p>
+          </div>
+          <div class="mb-4">
+            <p class="text-sm text-gray-500 dark:text-gray-400">Vehicle</p>
+            <p class="text-gray-800 dark:text-white font-medium">{{ m.vehicle }}</p>
+          </div>
+          <div class="mb-4">
+            <p class="text-sm text-gray-500 dark:text-gray-400">Date</p>
+            <p class="text-gray-800 dark:text-white font-medium">{{ m.date | date:'mediumDate' }}</p>
+          </div>
+        </div>
+        <div>
+          <h3 class="text-lg font-medium text-gray-800 dark:text-white mb-4">Additional Details</h3>
+          <div class="mb-4">
+            <p class="text-sm text-gray-500 dark:text-gray-400">Status</p>
+            <p class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+              [ngClass]="{
+                'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200': m.status === 'done',
+                'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-300': m.status === 'pending',
+                'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-300': m.status === 'cancelled'
+              }">
+              {{ m.status }}
+            </p>
+          </div>
+          <div class="mb-4">
+            <p class="text-sm text-gray-500 dark:text-gray-400">Odometer (km)</p>
+            <p class="text-gray-800 dark:text-white font-medium">{{ m.odometerKm }}</p>
+          </div>
+          <div class="mb-4">
+            <p class="text-sm text-gray-500 dark:text-gray-400">Cost</p>
+            <p class="text-gray-800 dark:text-white font-medium">{{ m.cost }}</p>
+          </div>
+          <div class="mb-4" *ngIf="m.garageName">
+            <p class="text-sm text-gray-500 dark:text-gray-400">Garage</p>
+            <p class="text-gray-800 dark:text-white font-medium">{{ m.garageName }}</p>
+          </div>
+          <div class="mb-4" *ngIf="m.nextDueDate">
+            <p class="text-sm text-gray-500 dark:text-gray-400">Next Due Date</p>
+            <p class="text-gray-800 dark:text-white font-medium">{{ m.nextDueDate | date:'mediumDate' }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="p-6 border-t border-gray-200 dark:border-gray-700">
+        <h3 class="text-lg font-medium text-gray-800 dark:text-white mb-4">Description</h3>
+        <div *ngIf="m.description" class="bg-gray-50 dark:bg-gray-700 rounded p-4">
+          <p class="text-gray-800 dark:text-gray-200 whitespace-pre-line">{{ m.description }}</p>
+        </div>
+        <div *ngIf="!m.description" class="text-gray-500 dark:text-gray-400 italic">
+          No description available for this maintenance record.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

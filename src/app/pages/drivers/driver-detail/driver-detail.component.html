@@ -1,0 +1,102 @@
+<div class="container mx-auto px-4 py-6">
+  <div class="flex items-center mb-6">
+    <button (click)="goBack()" class="mr-4 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+    </button>
+    <h1 class="text-2xl font-semibold text-gray-800 dark:text-white">Driver Details</h1>
+  </div>
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex justify-center items-center py-10">
+    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
+  </div>
+  <!-- Error Message -->
+  <div *ngIf="error" class="mb-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 dark:bg-red-900 dark:text-red-200">
+    {{ error }}
+  </div>
+  <!-- Driver Details -->
+  <div *ngIf="!loading && driver" class="max-w-4xl mx-auto">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+      <!-- Header with Actions -->
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+        <div class="flex items-center">
+          <div class="w-14 h-14 rounded-full bg-red-600 flex items-center justify-center text-white text-xl font-bold mr-4">
+            {{ driver.user.name.charAt(0) }}{{ driver.user.name.split(' ')[1]?.charAt(0) || '' }}
+          </div>
+          <div>
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-white">{{ driver.user.name }}</h2>
+            <p class="text-gray-500 dark:text-gray-400">Driver</p>
+          </div>
+        </div>
+        <div class="flex mt-4 md:mt-0 space-x-3">
+          <button (click)="editDriver()" class="btn btn-secondary flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+            Edit
+          </button>
+        </div>
+      </div>
+      <!-- Driver Information -->
+      <div class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Basic Information -->
+          <div>
+            <h3 class="text-lg font-medium text-gray-800 dark:text-white mb-4">Basic Information</h3>
+            <div class="mb-4">
+              <p class="text-sm text-gray-500 dark:text-gray-400">Full Name</p>
+              <p class="text-gray-800 dark:text-white font-medium">{{ driver.user.name }}</p>
+            </div>
+            <div class="mb-4">
+              <p class="text-sm text-gray-500 dark:text-gray-400">Email Address</p>
+              <p class="text-gray-800 dark:text-white font-medium">{{ driver.user.email }}</p>
+            </div>
+            <div class="mb-4">
+              <p class="text-sm text-gray-500 dark:text-gray-400">Phone</p>
+              <p class="text-gray-800 dark:text-white font-medium">{{ driver.phone }}</p>
+            </div>
+          </div>
+          <!-- Additional Details -->
+          <div>
+            <h3 class="text-lg font-medium text-gray-800 dark:text-white mb-4">Additional Details</h3>
+            <div class="mb-4">
+              <p class="text-sm text-gray-500 dark:text-gray-400">Status</p>
+              <p class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                [ngClass]="{
+                  'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200': driver.status === 'Available',
+                  'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200': driver.status === 'On Mission',
+                  'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-300': driver.status === 'On Leave',
+                  'bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-300': driver.status === 'Inactive'
+                }">
+                {{ driver.status }}
+              </p>
+            </div>
+            <div class="mb-4">
+              <p class="text-sm text-gray-500 dark:text-gray-400">Experience</p>
+              <p class="text-gray-800 dark:text-white font-medium">{{ driver.experience }} years</p>
+            </div>
+            <div class="mb-4">
+              <p class="text-sm text-gray-500 dark:text-gray-400">License Number</p>
+              <p class="text-gray-800 dark:text-white font-medium">{{ driver.licenseNumber }}</p>
+            </div>
+            <div class="mb-4">
+              <p class="text-sm text-gray-500 dark:text-gray-400">License Expiry</p>
+              <p class="text-gray-800 dark:text-white font-medium">{{ driver.licenseExpiry | date:'mediumDate' }}</p>
+            </div>
+          </div>
+        </div>
+        <!-- Notes -->
+        <div class="mt-8">
+          <h3 class="text-lg font-medium text-gray-800 dark:text-white mb-4">Notes</h3>
+          <div *ngIf="driver.notes" class="bg-gray-50 dark:bg-gray-700 rounded p-4">
+            <p class="text-gray-800 dark:text-gray-200 whitespace-pre-line">{{ driver.notes }}</p>
+          </div>
+          <div *ngIf="!driver.notes" class="text-gray-500 dark:text-gray-400 italic">
+            No notes available for this driver.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

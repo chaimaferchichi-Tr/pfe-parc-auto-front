@@ -1,0 +1,79 @@
+<header class="bg-white dark:bg-gray-800 shadow-sm h-16 dark-transition">
+  <div class="h-full px-4 flex items-center justify-between">
+    <!-- Left side - Toggle sidebar and Brand -->
+    <div class="flex items-center">
+      <button 
+        (click)="toggleSidebar.emit()" 
+        class="mr-4 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none"
+        aria-label="Toggle sidebar"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+        </svg>
+      </button>
+      <div class="text-xl font-semibold text-gray-800 dark:text-white lg:hidden">
+        Fleet Management
+      </div>
+    </div>
+    
+    <!-- Right side - Actions -->
+    <div class="flex items-center space-x-4">
+      <!-- Dark mode toggle -->
+      <button 
+        (click)="toggleTheme()" 
+        class="p-1 rounded-full text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-gray-800"
+        aria-label="Toggle dark mode"
+      >
+        <!-- Sun icon (visible in dark mode) -->
+        <svg *ngIf="isDarkMode" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+        <!-- Moon icon (visible in light mode) -->
+        <svg *ngIf="!isDarkMode" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+        </svg>
+      </button>
+      
+      <!-- User menu -->
+      <div class="relative">
+        <button 
+          (click)="toggleUserMenu()" 
+          class="flex items-center text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none"
+          aria-label="User menu"
+        >
+          <div class="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center text-white mr-2">
+            <span class="text-sm font-medium">
+              {{ userName ? (userName.split(' ')[0].charAt(0) + (userName.split(' ')[1].charAt(0) || '')) : 'U' }}
+            </span>
+          </div>
+          <span class="hidden md:block text-sm font-medium text-gray-700 dark:text-gray-300">
+            {{ userName || 'User' }}
+          </span>
+          <!-- Dropdown arrow -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+        
+        <!-- Dropdown menu -->
+        <div 
+          *ngIf="userMenuOpen" 
+          class="absolute right-0 mt-2 w-48 py-2 bg-white dark:bg-gray-800 rounded-md shadow-lg z-10 border border-gray-200 dark:border-gray-700"
+        >
+          <a 
+            (click)="navigateToProfile()" 
+            class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+          >
+            Profile
+          </a>
+          <a 
+            (click)="logout()" 
+            class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+          >
+            Sign out
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

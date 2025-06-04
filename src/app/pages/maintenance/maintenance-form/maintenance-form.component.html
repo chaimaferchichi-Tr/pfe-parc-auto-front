@@ -1,0 +1,65 @@
+<div class="container mx-auto p-4">
+  <h1 class="text-2xl font-semibold text-gray-800 dark:text-white mb-6">{{ isEditMode ? 'Edit Maintenance' : 'Add Maintenance' }}</h1>
+  <div *ngIf="error" class="mb-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 dark:bg-red-900 dark:text-red-200">{{ error }}</div>
+  <form [formGroup]="maintenanceForm" (ngSubmit)="onSubmit()" class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label class="form-label">Vehicle</label>
+        <select formControlName="vehicle" class="form-control">
+          <option value="">Select vehicle</option>
+          <option *ngFor="let v of vehicles" [value]="v._id">{{ v.name }} ({{ v.licensePlate }})</option>
+        </select>
+      </div>
+      <div>
+        <label class="form-label">Type</label>
+        <select formControlName="maintenanceType" class="form-control">
+          <option value="">Select type</option>
+          <option value="preventive">Preventive</option>
+          <option value="corrective">Corrective</option>
+        </select>
+      </div>
+      <div>
+        <label class="form-label">Title</label>
+        <input formControlName="title" class="form-control" placeholder="Title" />
+      </div>
+      <div>
+        <label class="form-label">Date</label>
+        <input type="date" formControlName="date" class="form-control" />
+      </div>
+      <div>
+        <label class="form-label">Odometer (km)</label>
+        <input type="number" formControlName="odometerKm" class="form-control" />
+      </div>
+      <div>
+        <label class="form-label">Cost</label>
+        <input type="number" formControlName="cost" class="form-control" />
+      </div>
+      <div>
+        <label class="form-label">Status</label>
+        <select formControlName="status" class="form-control">
+          <option value="done">Done</option>
+          <option value="pending">Pending</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+      </div>
+      <div>
+        <label class="form-label">Next Due Date</label>
+        <input type="date" formControlName="nextDueDate" class="form-control" />
+      </div>
+      <div>
+        <label class="form-label">Garage Name</label>
+        <input formControlName="garageName" class="form-control" />
+      </div>
+      <div class="md:col-span-2">
+        <label class="form-label">Description</label>
+        <textarea formControlName="description" class="form-control" rows="3"></textarea>
+      </div>
+    </div>
+    <div class="flex justify-end space-x-4 mt-6">
+      <button type="button" (click)="cancel()" class="btn btn-secondary">Cancel</button>
+      <button type="submit" class="btn btn-primary" [disabled]="submitting || maintenanceForm.invalid">
+        {{ isEditMode ? 'Update Maintenance' : 'Add Maintenance' }}
+      </button>
+    </div>
+  </form>
+</div>

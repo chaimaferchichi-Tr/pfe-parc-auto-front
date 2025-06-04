@@ -1,0 +1,200 @@
+<div class="container mx-auto px-4 py-6">
+  <!-- Back button and title -->
+  <div class="mb-6">
+    <button (click)="cancel()" class="flex items-center text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 mb-4">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+      </svg>
+      Cancel
+    </button>
+    <h1 class="text-2xl font-semibold text-gray-800 dark:text-white">{{ isEditMode ? 'Edit Mission' : 'Add New Mission' }}</h1>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex justify-center items-center py-10">
+    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error" class="mb-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 dark:bg-red-900 dark:text-red-200">
+    {{ error }}
+  </div>
+
+  <!-- Mission Form -->
+  <div *ngIf="!loading" class="bg-white dark:bg-gray-800 shadow-md rounded-lg overflow-hidden">
+    <form [formGroup]="missionForm" (ngSubmit)="onSubmit()" class="p-6">
+      <!-- Basic Information Section -->
+      <div class="mb-6">
+        <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Mission Information</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Title -->
+          <div>
+            <label for="title" class="form-label">Mission Title</label>
+            <input 
+              type="text" 
+              id="title" 
+              formControlName="title" 
+              class="form-control" 
+              placeholder="Enter mission title"
+            >
+            <div *ngIf="titleControl?.invalid && titleControl?.touched" class="form-error">
+              <span *ngIf="titleControl?.errors?.['required']">Mission title is required</span>
+            </div>
+          </div>
+
+
+          <!-- Status -->
+          <div>
+            <label for="status" class="form-label">Status</label>
+            <select id="status" formControlName="status" class="form-control">
+              <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
+            </select>
+            <div *ngIf="statusControl?.invalid && statusControl?.touched" class="form-error">
+              <span *ngIf="statusControl?.errors?.['required']">Status is required</span>
+            </div>
+          </div>
+
+          <!-- Priority -->
+          <div>
+            <label for="priority" class="form-label">Priority</label>
+            <select id="priority" formControlName="priority" class="form-control">
+              <option *ngFor="let priority of priorities" [value]="priority">{{ priority }}</option>
+            </select>
+            <div *ngIf="priorityControl?.invalid && priorityControl?.touched" class="form-error">
+              <span *ngIf="priorityControl?.errors?.['required']">Priority is required</span>
+            </div>
+          </div>
+
+          <!-- Start Date -->
+          <div>
+            <label for="startDate" class="form-label">Start Date</label>
+            <input 
+              type="date" 
+              id="startDate" 
+              formControlName="startDate" 
+              class="form-control"
+            >
+            <div *ngIf="startDateControl?.invalid && startDateControl?.touched" class="form-error">
+              <span *ngIf="startDateControl?.errors?.['required']">Start date is required</span>
+            </div>
+          </div>
+
+          <!-- End Date -->
+          <div>
+            <label for="endDate" class="form-label">End Date</label>
+            <input 
+              type="date" 
+              id="endDate" 
+              formControlName="endDate" 
+              class="form-control"
+            >
+            <div *ngIf="endDateControl?.invalid && endDateControl?.touched" class="form-error">
+              <span *ngIf="endDateControl?.errors?.['required']">End date is required</span>
+            </div>
+          </div>
+
+          <!-- Start Location -->
+          <div>
+            <label for="startLocation" class="form-label">Start Location</label>
+            <input 
+              type="text" 
+              id="startLocation" 
+              formControlName="startLocation" 
+              class="form-control" 
+              placeholder="Enter start location"
+            >
+          </div>
+
+          <!-- Destination -->
+          <div>
+            <label for="destination" class="form-label">Destination</label>
+            <input 
+              type="text" 
+              id="destination" 
+              formControlName="destination" 
+              class="form-control" 
+              placeholder="Enter destination"
+            >
+          </div>
+
+          <!-- Vehicle -->
+          <div>
+            <label for="vehicle" class="form-label">Vehicle</label>
+            <select id="vehicle" formControlName="vehicle" class="form-control">
+              <option [ngValue]="null">Select vehicle</option>
+              <option *ngFor="let v of vehicles" [ngValue]="v._id">{{ v.name }} ({{ v.licensePlate }})</option>
+            </select>
+            <div *ngIf="vehicleOverlapError" class="form-error text-red-600 mt-2">
+              {{ vehicleOverlapError }}
+            </div>
+          </div>
+
+          <!-- Driver -->
+          <div>
+            <label for="driver" class="form-label">Driver</label>
+            <select id="driver" formControlName="driver" class="form-control">
+              <option [ngValue]="null">Select driver</option>
+              <option *ngFor="let d of drivers" [ngValue]="d._id">{{ d.user.name }} {{ d.user.lastname}}</option>
+            </select>
+            <div *ngIf="dateOverlapError" class="form-error text-red-600 mt-2">
+              {{ dateOverlapError }}
+            </div>
+          </div>
+
+ 
+        </div>
+      </div>
+
+    
+
+      <!-- Description and Notes Section -->
+      <div class="mb-6">
+        <h2 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Additional Information</h2>
+        <div class="space-y-4">
+          <!-- Description -->
+          <div>
+            <label for="description" class="form-label">Description</label>
+            <textarea 
+              id="description" 
+              formControlName="description" 
+              class="form-control" 
+              rows="4"
+              placeholder="Enter mission description"
+            ></textarea>
+          </div>
+
+          <!-- Notes -->
+          <div>
+            <label for="notes" class="form-label">Notes</label>
+            <textarea 
+              id="notes" 
+              formControlName="notes" 
+              class="form-control" 
+              rows="3"
+              placeholder="Additional notes..."
+            ></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="flex justify-end space-x-4 mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+        <button 
+          type="button" 
+          (click)="cancel()" 
+          class="btn btn-secondary">
+          Cancel
+        </button>
+        <button 
+          type="submit" 
+          class="btn btn-primary"
+          [disabled]="submitting || missionForm.invalid || dateOverlapError || vehicleOverlapError">
+          <span *ngIf="submitting" class="inline-block mr-2">
+            <div class="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white"></div>
+          </span>
+          {{ isEditMode ? 'Update Mission' : 'Add Mission' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

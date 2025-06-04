@@ -1,0 +1,210 @@
+<div class="container mx-auto px-4 py-6">
+  <h1 class="text-2xl font-semibold text-gray-800 dark:text-white mb-6">Dashboard</h1>
+  
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex justify-center items-center py-10">
+    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
+  </div>
+  
+  <!-- Error Message -->
+  <div *ngIf="error" class="mb-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 dark:bg-red-900 dark:text-red-200">
+    {{ error }}
+  </div>
+  
+  <!-- Dashboard Content -->
+  <div *ngIf="!loading && !error">
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+      <!-- Total Users -->
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <div class="flex items-center">
+          <div class="p-3 rounded-full bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-200 mr-4">
+            <!-- User Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          </div>
+          <div>
+            <p class="text-gray-500 dark:text-gray-400 text-sm font-medium uppercase">Total Users</p>
+            <p class="text-2xl font-bold text-gray-800 dark:text-white">{{ totalUsers }}</p>
+          </div>
+        </div>
+      </div>
+      <!-- Total Drivers -->
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <div class="flex items-center">
+          <div class="p-3 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-200 mr-4">
+            <!-- Driver Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </div>
+          <div>
+            <p class="text-gray-500 dark:text-gray-400 text-sm font-medium uppercase">Total Drivers</p>
+            <p class="text-2xl font-bold text-gray-800 dark:text-white">{{ totalDrivers }}</p>
+          </div>
+        </div>
+      </div>
+      <!-- Total Vehicles -->
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <div class="flex items-center">
+          <div class="p-3 rounded-full bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-200 mr-4">
+            <!-- Vehicle Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 13l2-2m0 0l7-7 7 7M5 11v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6" />
+            </svg>
+          </div>
+          <div>
+            <p class="text-gray-500 dark:text-gray-400 text-sm font-medium uppercase">Total Vehicles</p>
+            <p class="text-2xl font-bold text-gray-800 dark:text-white">{{ availableVehicles + onMissionVehicles + inMaintenanceVehicles + outOfServiceVehicles }}</p>
+          </div>
+        </div>
+      </div>
+      <!-- Total Missions -->
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <div class="flex items-center">
+          <div class="p-3 rounded-full bg-yellow-100 dark:bg-yellow-900 text-yellow-600 dark:text-yellow-200 mr-4">
+            <!-- Mission Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a4 4 0 014-4h4m0 0V7a4 4 0 00-4-4H7a4 4 0 00-4 4v10a4 4 0 004 4h4a4 4 0 004-4z" />
+            </svg>
+          </div>
+          <div>
+            <p class="text-gray-500 dark:text-gray-400 text-sm font-medium uppercase">Total Missions</p>
+            <p class="text-2xl font-bold text-gray-800 dark:text-white">{{ completedMissions + cancelledMissions + plannedMissions + inProgressMissions }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+   
+    <!-- Charts Section -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+      <!-- Mission Status Chart (Pie) -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 flex flex-col items-center justify-center">
+        <h3 class="text-xl font-semibold mb-6 text-gray-800 dark:text-white text-center">Mission Status Distribution</h3>
+        <div class="flex justify-center w-full">
+          <apx-chart
+            [series]="series"
+            [chart]="chart"
+            [labels]="labels"
+            [title]="title"
+            [dataLabels]="dataLabels"
+            [colors]="getChartColors()"
+            [legend]="getApexOptions().legend"
+            [tooltip]="getApexOptions().tooltip">
+          </apx-chart>
+        </div>
+      </div>
+      <!-- Vehicle Status Chart (Donut) -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 flex flex-col items-center justify-center">
+        <h3 class="text-xl font-semibold mb-6 text-gray-800 dark:text-white text-center">Vehicle Status Overview</h3>
+        <div class="flex justify-center w-full">
+          <ng-container *ngIf="vehicleSeries && vehicleSeries.length && (vehicleSeries | someNonZero); else noVehicleStatusData">
+            <apx-chart
+              [series]="vehicleSeries"
+              [chart]="{ type: 'donut', width: 420, height: 420 }"
+              [labels]="vehicleLabels"
+              [title]="vehicleTitle"
+              [colors]="getChartColors()"
+              [legend]="getApexOptions().legend"
+              [tooltip]="getApexOptions().tooltip">
+            </apx-chart>
+          </ng-container>
+          <ng-template #noVehicleStatusData>
+            <div class="text-center text-gray-500 dark:text-gray-400 w-full">No vehicle status data available.</div>
+          </ng-template>
+        </div>
+      </div>
+      <!-- Maintenance Status Distribution & Monthly Maintenance Cost by Type (Side by Side) -->
+      <div class="col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Maintenance Status Distribution (Pie) -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 flex flex-col items-center justify-center">
+          <h3 class="text-xl font-semibold mb-6 text-gray-800 dark:text-white text-center">Maintenance Status Distribution</h3>
+          <div class="flex justify-center w-full">
+            <apx-chart
+              [series]="maintenanceStatusSeries"
+              [chart]="{ type: 'pie', width: 400, height: 400 }"
+              [labels]="maintenanceStatusLabels"
+              [title]="{ text: 'Maintenance Status Distribution' }"
+              [colors]="getChartColors()"
+              [legend]="getApexOptions().legend"
+              [tooltip]="getApexOptions().tooltip">
+            </apx-chart>
+          </div>
+        </div>
+        <!-- Monthly Maintenance Cost by Type (Bar) -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 flex flex-col items-center justify-center">
+          <h3 class="text-xl font-semibold mb-6 text-gray-800 dark:text-white text-center">Monthly Maintenance Cost by Type</h3>
+          <div class="flex justify-center w-full min-h-[300px]">
+            <ng-container *ngIf="maintenanceMonthlyTypeSeries.length > 0 && maintenanceMonthlyTypeLabels.length > 0; else noMaintTypeCostData">
+              <apx-chart
+                [series]="maintenanceMonthlyTypeSeries"
+                [chart]="maintenanceMonthlyTypeChart"
+                [xaxis]="{ categories: maintenanceMonthlyTypeLabels, labels: { rotate: -35, style: { colors: getApexAxisColors() } } }"
+                [title]="{ text: 'Monthly Maintenance Cost by Type', style: { fontWeight: 500, fontFamily: 'inherit', fontSize: '18px' } }"
+                [colors]="getChartColors()"
+                [legend]="getApexOptions().legend"
+                [tooltip]="getApexOptions().tooltip">
+              </apx-chart>
+            </ng-container>
+            <ng-template #noMaintTypeCostData>
+              <div class="text-center text-gray-500 dark:text-gray-400 w-full">No monthly maintenance cost data available.</div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+      <!-- Fuel Consumption Chart (Dynamic) -->
+      <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 flex flex-col items-center justify-center">
+        <h3 class="text-xl font-semibold mb-6 text-gray-800 dark:text-white text-center">Fuel Consumption</h3>
+        <div class="mb-4 flex flex-col md:flex-row items-center gap-2">
+          <label for="fuelChartGroup" class="mr-2 text-gray-700 dark:text-gray-200">Group by:</label>
+          <select id="fuelChartGroup" [(ngModel)]="fuelChartGroup" (change)="onFuelChartGroupChange(fuelChartGroup)"
+            class="rounded border-gray-300 dark:bg-gray-700 dark:text-white px-2 py-1">
+            <option value="vehicle">Vehicle</option>
+            <option value="mission">Mission</option>
+            <option value="driver">Driver</option>
+          </select>
+        </div>
+        <div class="flex justify-center w-full min-h-[300px]">
+          <ng-container *ngIf="!fuelChartLoading && fuelChartLabels.length > 0; else noFuelChartData">
+            <apx-chart
+              [series]="fuelChartSeries"
+              [chart]="fuelChartBar"
+              [xaxis]="{ categories: fuelChartLabels, labels: { rotate: -35, style: { colors: getApexAxisColors() } } }"
+              [title]="{ text: fuelChartTitle, style: { fontWeight: 500, fontFamily: 'inherit', fontSize: '18px' } }"
+              [colors]="getChartColors()"
+              [legend]="getApexOptions().legend"
+              [tooltip]="getApexOptions().tooltip">
+            </apx-chart>
+          </ng-container>
+          <ng-template #noFuelChartData>
+            <div class="text-center text-gray-500 dark:text-gray-400 w-full">No fuel consumption data available.</div>
+          </ng-template>
+        </div>
+      </div>
+
+        <!-- Driver Status Chart (Pie) -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 flex flex-col items-center justify-center mt-8">
+      <h3 class="text-xl font-semibold mb-6 text-gray-800 dark:text-white text-center">Driver Status Distribution</h3>
+      <div class="flex justify-center w-full">
+        <apx-chart
+          [series]="driverStatusSeries"
+          [chart]="{ type: 'pie', width: 400, height: 400 }"
+          [labels]="driverStatusLabels"
+          [title]="{ text: 'Driver Status Distribution' }"
+          [colors]="getChartColors()"
+          [legend]="getApexOptions().legend"
+          [tooltip]="getApexOptions().tooltip">
+        </apx-chart>
+      </div>
+    </div>
+
+    </div>
+  
+
+
+  </div>
+
+
+  
+</div>

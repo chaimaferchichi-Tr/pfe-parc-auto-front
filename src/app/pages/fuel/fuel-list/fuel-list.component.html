@@ -1,0 +1,199 @@
+<div class="container p-4 mx-auto">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-semibold text-gray-800 dark:text-white">Fuel Records</h1>
+    <button 
+      (click)="addFuelRecord()"
+      class="flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none transition-colors"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      </svg>
+      Add Fuel Record
+    </button>
+  </div>
+
+  <!-- Search and Filter Bar -->
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 mb-6">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <!-- Search -->
+      <div class="flex-1">
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+            </svg>
+          </div>
+          <input 
+            type="text" 
+            [(ngModel)]="searchTerm"
+            (keyup.enter)="onSearch()"
+            class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-red-500 focus:border-red-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500" 
+            placeholder="Search fuel records..."
+          >
+          <button 
+            *ngIf="searchTerm" 
+            (click)="clearSearch()" 
+            class="absolute inset-y-0 right-0 flex items-center pr-3"
+          >
+            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Filters -->
+      <div class="flex flex-col md:flex-row gap-2">
+        <!-- Vehicle Filter -->
+        <select 
+          [(ngModel)]="vehicleFilter" 
+          (change)="onVehicleFilterChange(vehicleFilter)"
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500"
+        >
+          <option value="all">All Vehicles</option>
+          <option *ngFor="let vehicle of uniqueVehicles" [value]="vehicle.id">{{ vehicle.name }}</option>
+        </select>
+        
+        <!-- Fuel Type Filter -->
+        <select 
+          [(ngModel)]="fuelTypeFilter" 
+          (change)="onFuelTypeFilterChange(fuelTypeFilter)"
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-red-500 dark:focus:border-red-500"
+        >
+          <option value="all">All Fuel Types</option>
+          <option *ngFor="let type of uniqueFuelTypes" [value]="type">{{ type }}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Indicator -->
+  <div *ngIf="loading" class="flex justify-center py-8">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-700"></div>
+  </div>
+  
+  <!-- Fuel Records List -->
+  <div *ngIf="!loading" class="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
+    <!-- Empty State -->
+    <div *ngIf="filteredRecords.length === 0" class="p-8 text-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" />
+      </svg>
+      <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-white">No fuel records found</h3>
+      <p class="mt-1 text-gray-500 dark:text-gray-400">Try adjusting your search or filter to find what you're looking for.</p>
+    </div>
+    
+    <!-- Fuel Records Table -->
+    <div *ngIf="filteredRecords.length > 0" class="overflow-x-auto">
+      <table class="w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <thead class="bg-gray-50 dark:bg-gray-700">
+          <tr>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer" (click)="onSort('date')">
+              <div class="flex items-center">
+                <span>Date</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="getSortIcon('date')" />
+                </svg>
+              </div>
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer" (click)="onSort('vehicle')">
+              <div class="flex items-center">
+                <span>Vehicle</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="getSortIcon('vehicle')" />
+                </svg>
+              </div>
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer" (click)="onSort('fuelType')">
+              <div class="flex items-center">
+                <span>Fuel Type</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="getSortIcon('fuelType')" />
+                </svg>
+              </div>
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer" (click)="onSort('quantity')">
+              <div class="flex items-center">
+                <span>Quantity</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="getSortIcon('quantity')" />
+                </svg>
+              </div>
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer" (click)="onSort('cost')">
+              <div class="flex items-center">
+                <span>Cost</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="getSortIcon('cost')" />
+                </svg>
+              </div>
+            </th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer" (click)="onSort('driver')">
+              <div class="flex items-center">
+                <span>Driver</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="getSortIcon('driver')" />
+                </svg>
+              </div>
+            </th>
+            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
+          <tr *ngFor="let record of displayedRecords" class="hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer">
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
+              {{ formatDate(record.date) }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm font-medium text-gray-900 dark:text-white">{{ record.mission?.vehicle?.name || 'N/A' }}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span [class]="'px-2 inline-flex text-xs leading-5 font-semibold rounded-full ' + getFuelTypeClass(record.fuelType)">
+                {{ record.fuelType }}
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-900 dark:text-white">{{ record.quantity }} L</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+              {{ record.cost }} DT
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <div class="text-sm text-gray-900 dark:text-white">{{ record.mission?.driver?.user?.name || 'N/A' }}</div>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium flex gap-2 items-center">
+              <button (click)="viewFuelRecord(record._id)" class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300" title="View">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+              </button>
+              <button (click)="editFuelRecord(record._id, $event)" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300" title="Edit">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+              </button>
+              <button (click)="confirmDelete(record._id, $event)" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300" title="Delete">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Pagination -->
+    <app-pagination
+      *ngIf="totalItems > itemsPerPage"
+      [currentPage]="currentPage"
+      [totalItems]="totalItems"
+      [itemsPerPage]="itemsPerPage"
+      (pageChanged)="onPageChange($event)"
+      class="py-4"
+    ></app-pagination>
+  </div>
+</div>

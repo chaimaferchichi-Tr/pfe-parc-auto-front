@@ -1,0 +1,123 @@
+<div class="container mx-auto px-4 py-6">
+  <div class="flex items-center mb-6">
+    <button (click)="cancel()" class="mr-4 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+    </button>
+    <h1 class="text-2xl font-semibold text-gray-800 dark:text-white">{{ isEditMode ? 'Edit User' : 'Add New User' }}</h1>
+  </div>
+  
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex justify-center items-center py-10">
+    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
+  </div>
+  
+  <!-- Error Message -->
+  <div *ngIf="error" class="mb-4 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 dark:bg-red-900 dark:text-red-200">
+    {{ error }}
+  </div>
+  
+  <!-- User Form -->
+  <div *ngIf="!loading" class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden max-w-2xl mx-auto">
+    <div class="p-6">
+      <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+        <!-- Name Field -->
+        <div class="mb-4">
+          <label for="name" class="form-label">First Name</label>
+          <input type="text" id="name" formControlName="name" class="form-control" placeholder="Enter first name">
+          <div *ngIf="nameControl?.invalid && nameControl?.touched" class="form-error">
+            First name is required
+          </div>
+        </div>
+
+        <!-- Lastname Field -->
+        <div class="mb-4">
+          <label for="lastname" class="form-label">Last Name</label>
+          <input type="text" id="lastname" formControlName="lastname" class="form-control" placeholder="Enter last name">
+          <div *ngIf="lastnameControl?.invalid && lastnameControl?.touched" class="form-error">
+            Last name is required
+          </div>
+        </div>
+        
+        <!-- Email Field -->
+        <div class="mb-4">
+          <label for="email" class="form-label">Email Address</label>
+          <input type="email" id="email" formControlName="email" class="form-control" placeholder="Enter email address">
+          <div *ngIf="emailControl?.invalid && emailControl?.touched" class="form-error">
+            <span *ngIf="emailControl?.errors?.['required']">Email is required</span>
+            <span *ngIf="emailControl?.errors?.['email']">Please enter a valid email</span>
+          </div>
+        </div>
+        
+        <!-- Password Field -->
+        <div class="mb-4" *ngIf="!isEditMode">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" id="password" formControlName="password" class="form-control" placeholder="Enter password">
+          <div *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched" class="form-error">
+            Password is required
+          </div>
+        </div>
+
+        <!-- Confirm Password Field -->
+        <div class="mb-6" *ngIf="!isEditMode">
+          <label for="confirmPassword" class="form-label">Confirm Password</label>
+          <input type="password" id="confirmPassword" formControlName="confirmPassword" class="form-control" placeholder="Confirm password">
+          <div *ngIf="userForm.get('confirmPassword')?.invalid && userForm.get('confirmPassword')?.touched" class="form-error">
+            Confirm password is required
+          </div>
+        </div>
+        
+        <!-- Role Field -->
+        <div class="mb-4">
+          <label for="role" class="form-label">Role</label>
+          <select id="role" formControlName="role" class="form-control">
+            <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+          </select>
+          <div *ngIf="roleControl?.invalid && roleControl?.touched" class="form-error">
+            Role is required
+          </div>
+        </div>
+        
+        <!-- Status Field -->
+        <div class="mb-6">
+          <label for="status" class="form-label">Status</label>
+          <select id="status" formControlName="status" class="form-control">
+            <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
+          </select>
+          <div *ngIf="statusControl?.invalid && statusControl?.touched" class="form-error">
+            Status is required
+          </div>
+        </div>
+        
+        <!-- Form Actions -->
+        <div class="flex justify-end space-x-4">
+          <button 
+            type="button" 
+            (click)="cancel()" 
+            class="btn btn-secondary"
+          >
+            Cancel
+          </button>
+          <button 
+            type="submit" 
+            [disabled]="submitting"
+            [class.opacity-50]="submitting"
+            class="btn btn-primary"
+          >
+            <span *ngIf="submitting">
+              <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Saving...
+            </span>
+            <span *ngIf="!submitting">
+              {{ isEditMode ? 'Update User' : 'Save User' }}
+            </span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
