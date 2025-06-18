@@ -1,0 +1,8 @@
+{
+  "/User/*": {
+    "target": "https://backend-parc.onrender.com",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}

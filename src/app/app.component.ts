@@ -81,7 +81,7 @@ export class AppComponent implements OnInit {
         const script = document.createElement('script');
         script.type = 'module';
         script.id = 'n8n-chatbot';
-        script.innerHTML = `import { createChat } from "https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js";\ncreateChat({ webhookUrl: \"http://localhost:5678/webhook/e6ab8aa7-445a-4806-b278-40d57a33dfa2/chat\" });`;
+        script.innerHTML = `import { createChat } from "https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js";\ncreateChat({ webhookUrl: \"https://chaiman8n.app.n8n.cloud/webhook/66eff47a-8c3d-45f0-a62f-0978e8f0cceb/chat" });`;
         document.body.appendChild(script);
       }
     } else {
