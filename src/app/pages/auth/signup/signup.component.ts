@@ -60,12 +60,7 @@ export class SignupComponent implements OnInit {
       password: this.f['password'].value
     }).subscribe({
       next: response => {
-        // localStorage.setItem('currentUser', JSON.stringify(response.user));
-        // localStorage.setItem('token', response.token);
-        // this.authService.currentUserSubject.next(response.user);
-
-        // Redirect to login after successful signup
-        this.router.navigate(['/auth/login']);
+        this.router.navigate(['/auth/login'], { replaceUrl: true });
       },
       error: error => {
         this.error = error.message || 'Registration failed. Please try again.';
