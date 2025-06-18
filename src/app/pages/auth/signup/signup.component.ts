@@ -60,7 +60,8 @@ export class SignupComponent implements OnInit {
       password: this.f['password'].value
     }).subscribe({
       next: () => {
-        this.router.navigate(['/dashboard']);
+        // Redirect to login after successful signup
+        this.router.navigate(['/auth/login']);
       },
       error: error => {
         this.error = error.message || 'Registration failed. Please try again.';
