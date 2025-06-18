@@ -29,10 +29,10 @@ export class SignupComponent implements OnInit {
       validators: this.passwordMatchValidator
     });
 
-    // Redirect to dashboard if already logged in
-    if (this.authService.isLoggedIn) {
-      this.router.navigate(['/dashboard']);
-    }
+    // // Redirect to dashboard if already logged in
+    // if (this.authService.isLoggedIn) {
+    //   this.router.navigate(['/dashboard']);
+    // }
   }
 
   ngOnInit(): void {
@@ -59,7 +59,11 @@ export class SignupComponent implements OnInit {
       email: this.f['email'].value,
       password: this.f['password'].value
     }).subscribe({
-      next: () => {
+      next: response => {
+        // localStorage.setItem('currentUser', JSON.stringify(response.user));
+        // localStorage.setItem('token', response.token);
+        // this.authService.currentUserSubject.next(response.user);
+
         // Redirect to login after successful signup
         this.router.navigate(['/auth/login']);
       },
