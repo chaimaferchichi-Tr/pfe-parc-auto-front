@@ -71,10 +71,8 @@ export class AuthService {
     return this.http.post<AuthResponse>(`https://backend-parc.onrender.com/User/register`, userData)
       .pipe(
         map(response => {
-          // Store user details and jwt token in local storage
-          localStorage.setItem('currentUser', JSON.stringify(response.user));
-          localStorage.setItem('token', response.token);
-          this.currentUserSubject.next(response.user);
+          // Do NOT store user details or jwt token in local storage after signup
+          // Only return the user object
           return response.user;
         }),
         catchError(error => {
