@@ -68,7 +68,7 @@ export class AuthService {
 
   // Signup method
   signup(userData: SignupRequest): Observable<User> {
-    return this.http.post<AuthResponse>(`https://backend-parc.onrender.com//User/register`, userData)
+    return this.http.post<AuthResponse>(`https://backend-parc.onrender.com/User/register`, userData)
       .pipe(
         map(response => {
           // Store user details and jwt token in local storage
